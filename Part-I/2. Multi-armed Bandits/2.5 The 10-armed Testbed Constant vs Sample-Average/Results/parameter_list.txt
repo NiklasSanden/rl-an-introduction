@@ -1,0 +1,8 @@
+K = 10
+VARIANCE = 1.0
+MOVING_VARIANCE = 0.01
+NUM_RUNS = 2000
+STEPS = 10000
+AGENTS = [ConstantEpsilonGreedy(K, 0.1, 0.1), EpsilonGreedy(K, 0.1)]
+COLOURS = ['r', 'b']
+LABELS = ['Constant', 'Sample Avg']
