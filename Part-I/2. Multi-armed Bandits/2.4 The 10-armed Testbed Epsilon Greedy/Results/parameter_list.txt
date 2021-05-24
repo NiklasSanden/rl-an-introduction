@@ -1,0 +1,7 @@
+K = 10
+VARIANCE = 1.0
+NUM_RUNS = 2000
+STEPS = 1000
+EPSILONS = [0.0, 0.01, 0.1]
+COLOURS = ['g', 'r', 'b']
+LABELS = ['eps=0.0', 'eps=0.01', 'eps=0.1']
