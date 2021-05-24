@@ -10,4 +10,5 @@ class Agent(object):
         self.q_approximator.update_action(action, value)
 
     def reset(self):
+        self.action_selector.reset()
         self.q_approximator.reset()

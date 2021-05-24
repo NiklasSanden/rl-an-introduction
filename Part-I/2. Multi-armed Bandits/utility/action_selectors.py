@@ -20,6 +20,9 @@ def argmax(array):
 class GreedyActionSelector(object):
     def __call__(self, Q):
         return argmax(Q)
+    
+    def reset(self):
+        pass
 
 class EpsilonGreedyActionSelector(object):
     def __init__(self, epsilon):
@@ -30,3 +33,25 @@ class EpsilonGreedyActionSelector(object):
             return np.random.randint(0, Q.size)
         else:
             return argmax(Q)
+    
+    def reset(self):
+        pass
+
+class UCBActionSelector(object):
+    def __init__(self, k, c):
+        self.k = k
+        self.c = c
+        self.reset()
+
+    def __call__(self, Q):
+        array = Q + self.c * np.sqrt(np.log(self.t) / np.maximum(1, self.N))
+        array = (self.N > 0) * array + (self.N == 0) * np.ones(self.k) * 1000000000.0
+        action = argmax(array)
+        
+        self.N[action] += 1
+        self.t += 1
+        return action
+
+    def reset(self):
+        self.N = np.zeros(self.k, dtype=int)
+        self.t = 1
