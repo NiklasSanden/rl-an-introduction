@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 import sys, os
-sys.path.insert(1, os.path.realpath(os.path.pardir))
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from utility.action_selectors import *
 from utility.agent import *
 from utility.environments import *
