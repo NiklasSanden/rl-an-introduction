@@ -1,0 +1,10 @@
+K = 10
+VARIANCE = 1.0
+NUM_RUNS = 2000
+STEPS = 1000
+AGENTS = [
+    Agent(K, GreedyActionSelector(), QConstantOptimistic(K, 0.1, 5.0)),
+    Agent(K, EpsilonGreedyActionSelector(0.1), QConstant(K, 0.1))
+]
+COLOURS = ['r', 'b']
+LABELS = ['Optimistic', 'Epsilon greedy']
