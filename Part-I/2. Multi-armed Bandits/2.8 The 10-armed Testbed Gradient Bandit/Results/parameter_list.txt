@@ -1,0 +1,12 @@
+K = 10
+VARIANCE = 1.0
+MEAN = 4.0
+NUM_RUNS = 2000
+STEPS = 1000
+AGENTS = [
+    GradientBandit(K, 0.1),
+    Agent(K, UCBActionSelector(K, 2.0), QSampleAvg(K)),
+    Agent(K, EpsilonGreedyActionSelector(0.1), QConstant(K, 0.1))
+]
+COLOURS = ['r', 'b', 'g']
+LABELS = ['Gradient', 'UCB', 'Constant Epsilon Greedy']

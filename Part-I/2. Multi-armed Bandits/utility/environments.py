@@ -32,3 +32,11 @@ class MovingKArmedBandits(KArmedBandits):
 
     def reset(self):
         self.q = np.ones(self.k) * np.random.normal(scale=self.variance)
+
+class StationaryMovedKArmedBandits(KArmedBandits):
+    def __init__(self, k, variance, mean):
+        self.mean = mean
+        super(StationaryMovedKArmedBandits, self).__init__(k, variance)
+
+    def reset(self):
+        self.q = np.random.normal(loc=self.mean, scale=self.variance, size=self.k)
