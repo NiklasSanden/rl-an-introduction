@@ -34,7 +34,7 @@ AGENTS = [
         Agent(K, GreedyActionSelector(), QConstantOptimistic(K, 0.1, i)) for i in PARAMETERS[3]
     ]
 ]
-COLOURS = ['r', 'g', 'b', 'k', 'm']
+COLOURS = ['r', 'g', 'b', 'k']
 LABELS = ['Epsilon', 'Gradient', 'UCB', 'Optimistic']
 
 if __name__ == "__main__":
