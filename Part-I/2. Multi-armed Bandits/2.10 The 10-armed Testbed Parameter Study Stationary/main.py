@@ -1,4 +1,3 @@
-import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -13,15 +12,13 @@ from utility.q_approximators import *
 # PARAMETERS
 K = 10
 VARIANCE = 1.0
-MOVING_VARIANCE = 0.01
-NUM_RUNS = 100
-STEPS = 20000
+NUM_RUNS = 2000
+STEPS = 1000
 PARAMETERS = [
     [1/128, 1/64, 1/32, 1/16, 1/8, 1/4],
     [1/32, 1/16, 1/8, 1/4, 1/2, 1, 2, 4],
     [1/16, 1/8, 1/4, 1/2, 1, 2, 4],
-    [1/4, 1/2, 1, 2, 4],
-    [1/128, 1/64, 1/32, 1/16, 1/8, 1/4]
+    [1/4, 1/2, 1, 2, 4]
 ]
 AGENTS = [
     [
@@ -35,17 +32,14 @@ AGENTS = [
     ],
     [
         Agent(K, GreedyActionSelector(), QConstantOptimistic(K, 0.1, i)) for i in PARAMETERS[3]
-    ],
-    [
-        Agent(K, EpsilonGreedyActionSelector(i), QConstant(K, 0.1)) for i in PARAMETERS[4]
     ]
 ]
 COLOURS = ['r', 'g', 'b', 'k', 'm']
-LABELS = ['Epsilon', 'Gradient', 'UCB', 'Optimistic', 'Constant Epsilon']
+LABELS = ['Epsilon', 'Gradient', 'UCB', 'Optimistic']
 
 if __name__ == "__main__":
     agents = AGENTS
-    bandits = MovingKArmedBandits(K, VARIANCE, MOVING_VARIANCE)
+    bandits = StationaryKArmedBandits(K, VARIANCE)
     
     average_rewards = [np.zeros((NUM_RUNS, len(agents[i]))) for i in range(len(agents))]
     for n in tqdm(range(NUM_RUNS)):
@@ -53,8 +47,6 @@ if __name__ == "__main__":
             for agent in agents[i]:
                 agent.reset()
         bandits.reset()
-        # In order to reduce variance now that we run few NUM_RUNS
-        bandits.q = np.zeros(K)
 
         rewards = [np.zeros((STEPS, len(agents[i]))) for i in range(len(agents))]
         for j in tqdm(range(STEPS), leave=False):
@@ -65,10 +57,8 @@ if __name__ == "__main__":
                     agents[i][a].update_action(action, reward)
 
                     rewards[i][j, a] = reward
-            bandits.move()
         
         for i in range(len(rewards)):
-            rewards[i] = rewards[i][-(STEPS // 2):, :]
             rewards[i] = np.average(rewards[i], axis=0)
             average_rewards[i][n, :] = rewards[i]
 
