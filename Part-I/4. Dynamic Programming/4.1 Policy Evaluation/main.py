@@ -13,6 +13,6 @@ GAMMA = 1.0
 
 if __name__ == "__main__":
     p = GridworldNxM(N, M)
-    V = VEvaluation(PI, p, TERMINALS, MAX_DELTA, GAMMA)
+    V, _ = v_evaluation(PI, p, TERMINALS, MAX_DELTA, GAMMA)
     for n in range(N):
         print([round(V[(n, m)], 1) for m in range(M)])
