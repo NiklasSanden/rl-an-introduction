@@ -1,0 +1,10 @@
+K = 10
+NUM_RUNS = 2000
+STEPS = 1000
+BANDITS = StationaryKArmedBandits(K, mean=0.0, variance=1.0)
+AGENTS = [
+    Agent(K, UCBActionSelector(K, 2.0),         QSampleAvg(K)),
+    Agent(K, EpsilonGreedyActionSelector(0.1),  QSampleAvg(K))
+]
+COLOURS = ['r', 'b']
+LABELS = ['UCB', 'Epsilon greedy']

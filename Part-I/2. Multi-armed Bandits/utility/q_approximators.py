@@ -44,3 +44,46 @@ class QConstantOptimistic(QConstant):
     
     def reset(self):
         self.Q = np.ones(self.k) * self.start_values
+
+class Baseline(object):
+    def __init__(self):
+        self.reset()
+
+    def get_diff(self, R):
+        if self.t == 0:
+            return 0.0
+        else:
+            return R - self.R
+
+    def update(self, R):
+        self.t += 1
+        self.R += (1.0 / self.t) * (R - self.R)
+
+    def reset(self):
+        self.R = 0.0
+        self.t = 0
+class GradientBandit(QApproximator): # Note that this approximates H instead of Q.
+    def __init__(self, k, alpha, use_baseline=True):
+        self.alpha = alpha
+        self.use_baseline = use_baseline
+        self.baseline = Baseline()
+        super(GradientBandit, self).__init__(k)
+
+    def get(self):
+        e_x = np.exp(self.H - np.max(self.H))
+        return e_x / e_x.sum()
+
+    def update_action(self, action, value):
+        pi = self.get()
+        if self.use_baseline:
+            self.baseline.update(value)
+            diff = self.baseline.get_diff(value)
+        else:
+            diff = value
+
+        self.H -= self.alpha * diff * pi
+        self.H[action] += self.alpha * diff
+
+    def reset(self):
+        self.H = np.zeros(self.k)
+        self.baseline.reset()

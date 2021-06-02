@@ -1,0 +1,10 @@
+K = 10
+NUM_RUNS = 2000
+STEPS = 10000
+BANDITS = MovingKArmedBandits(K, mean=0.0, variance=1.0, moving_variance=0.01, same_start=True)
+AGENTS = [
+    Agent(K, EpsilonGreedyActionSelector(0.1), QConstant(K, 0.1)),
+    Agent(K, EpsilonGreedyActionSelector(0.1), QSampleAvg(K))
+]
+COLOURS = ['r', 'b']
+LABELS = ['Constant', 'Sample Avg']

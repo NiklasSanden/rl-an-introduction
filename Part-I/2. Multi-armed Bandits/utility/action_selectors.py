@@ -55,3 +55,10 @@ class UCBActionSelector(object):
     def reset(self):
         self.N = np.zeros(self.k, dtype=int)
         self.t = 1
+
+class StochasticActionSelector(object):
+    def __call__(self, pi):
+        return np.random.choice(range(pi.size), p=pi)
+
+    def reset(self):
+        pass
