@@ -53,7 +53,7 @@ class GradientBandit(object):
         self.baseline.update(value)
         diff = self.baseline.get_diff(value)
 
-        self.H -= self.alpha * diff * pi[action]
+        self.H -= self.alpha * diff * pi
         self.H[action] += self.alpha * diff
 
     def reset(self):
