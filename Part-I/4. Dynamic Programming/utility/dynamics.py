@@ -104,7 +104,7 @@ class JacksCarRental(DynamicsFunction):
     but the amount of computation time to perform just a single iteration inside v_evaluation was too much for the entire P function.
     """
     def __init__(self, max_a=20, max_b=20, max_transfer=5, lambda_customer_a=3.0, lambda_customer_b=4.0, 
-                       lambda_return_a=3.0, lambda_return_b=2.0, pay=10.0, cost=2.0, cut_random_loop=10):
+                       lambda_return_a=3.0, lambda_return_b=2.0, pay=10.0, cost=2.0, extended=False, cut_random_loop=10):
 
         self.memo = {}
 
@@ -148,8 +148,17 @@ class JacksCarRental(DynamicsFunction):
                                         return_b_prob = self.poisson(lambda_return_b, return_b) if return_b < return_b_iter else 1.0 - total_return_b_prob
                                         total_return_b_prob += return_b_prob
 
-                                        reward = -cost * abs(action)
+                                        if extended and action > 0: # Jack's employee helps with one
+                                            reward = -cost * (action - 1)
+                                        else:
+                                            reward = -cost * abs(action)
                                         reward += (customer_a + customer_b) * pay
+
+                                        if extended: # Extra parking slots
+                                            if new_state_a > 10:
+                                                reward -= 4
+                                            if new_state_b > 10:
+                                                reward -= 4
 
                                         next_state_a = new_state_a - customer_a + return_a
                                         next_state_b = new_state_b - customer_b + return_b

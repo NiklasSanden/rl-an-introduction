@@ -8,22 +8,20 @@ from utility.dynamics import *
 from utility.policy_evaluation import *
 
 # PARAMETERS
+MAX_DELTA = 0.01
+GAMMA = 0.9
 MAX_A = 20
 MAX_B = 20
 MAX_TRANSFER = 5
-CUT_RANDOM_LOOP = 10
+P = JacksCarRental(max_a=MAX_A, max_b=MAX_B, max_transfer=MAX_TRANSFER, extended=False, cut_random_loop=10)
 TERMINALS = {}
 PI = lambda s: { action : 1.0 if action == 0 else 0.0 for action in range(-MAX_TRANSFER, MAX_TRANSFER + 1) }
-MAX_DELTA = 0.01
-GAMMA = 0.9
 
 if __name__ == "__main__":
-    p = JacksCarRental(max_a=MAX_A, max_b=MAX_B, max_transfer=MAX_TRANSFER, cut_random_loop=CUT_RANDOM_LOOP)
-    
-    V, optimal = v_evaluation(PI, p, TERMINALS, MAX_DELTA, GAMMA)
+    V, optimal = v_evaluation(PI, P, TERMINALS, MAX_DELTA, GAMMA)
     while not optimal:
-        PI = get_greedy_PI_from_V(V, p, GAMMA)
-        V, optimal = v_evaluation(PI, p, TERMINALS, MAX_DELTA, GAMMA)
+        PI = get_greedy_PI_from_V(V, P, GAMMA)
+        V, optimal = v_evaluation(PI, P, TERMINALS, MAX_DELTA, GAMMA)
     print("Optimal")
 
     # PI

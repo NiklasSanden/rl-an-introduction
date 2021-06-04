@@ -1,8 +1,8 @@
+MAX_DELTA = 0.01
+GAMMA = 0.9
 MAX_A = 20
 MAX_B = 20
 MAX_TRANSFER = 5
-CUT_RANDOM_LOOP = 10
+P = JacksCarRental(max_a=MAX_A, max_b=MAX_B, max_transfer=MAX_TRANSFER, extended=True, cut_random_loop=10)
 TERMINALS = {}
 PI = lambda s: { action : 1.0 if action == 0 else 0.0 for action in range(-MAX_TRANSFER, MAX_TRANSFER + 1) }
-MAX_DELTA = 0.01
-GAMMA = 0.9
