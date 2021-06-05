@@ -2,8 +2,6 @@ import numpy as np
 from tqdm import tqdm
 import pickle
 
-import os
-
 class ActionNode(object):
     def __init__(self, future_states=[], rewards=[], probabilities=[]):
         assert len(future_states) == len(rewards) == len(probabilities), "Lists given to an ActionNode were of different lengths"
@@ -178,3 +176,24 @@ class JacksCarRental(DynamicsFunction):
         if not ((lambda_, n) in self.memo):
             self.memo[(lambda_, n)] = (lambda_ ** n) * np.math.exp(-lambda_) / np.math.factorial(n)
         return self.memo[(lambda_, n)]
+
+
+class GamblersProblem(DynamicsFunction):
+    """
+    This implementation does not allow action 0 in states that aren't terminal. The figure in the book
+    will break ties for the policy by (seemingly) choosing the lowest action/bet that isn't 0, so this 
+    implementation detail makes it easier to get the same result.
+    """
+    def __init__(self, p=0.4, goal=100):
+        states = {}
+        for state in range(1, goal):
+            action_nodes = [ActionNode([state + action, state - action], 
+                                       [1.0 if state + action == goal else 0.0, 0.0], 
+                                       [p, 1.0 - p])
+                                       for action in range(1, min(state, goal - state) + 1)]
+            states[state] = StateNode([action for action in range(1, len(action_nodes) + 1)], action_nodes)
+        for state in [0, goal]:
+            action_nodes = [ActionNode([state], [0.0], [1.0])]
+            states[state] = StateNode([0], action_nodes)
+
+        super(GamblersProblem, self).__init__(states)

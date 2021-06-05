@@ -1,0 +1,8 @@
+GOAL = 100
+P = GamblersProblem(p=0.55, goal=GOAL)
+TERMINALS = {0, GOAL}
+MAX_DELTA = 0.0
+GAMMA = 1.0
+ITERATIONS_TO_PLOT = [1, 2, 3, 32, float('inf')]
+COLOURS = ['g', 'r', 'b', 'm', 'y']
+LABELS = ["sweep 1", "sweep 2", "sweep 3", "sweep 32", "Final v"]

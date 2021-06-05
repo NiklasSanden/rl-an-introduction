@@ -21,7 +21,7 @@ if __name__ == "__main__":
     V, optimal = v_evaluation(PI, P, TERMINALS, MAX_DELTA, GAMMA)
     while not optimal:
         PI = get_greedy_PI_from_V(V, P, GAMMA)
-        V, optimal = v_evaluation(PI, P, TERMINALS, MAX_DELTA, GAMMA)
+        V, optimal = v_evaluation(PI, P, TERMINALS, MAX_DELTA, GAMMA, V)
     print("Optimal")
 
     # PI
