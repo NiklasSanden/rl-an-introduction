@@ -19,5 +19,5 @@ AGENTS = [
 COLOURS = ['g', 'r', 'b']
 LABELS = ['eps=0.0', 'eps=0.01', 'eps=0.1']
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     plotter(NUM_RUNS, STEPS, AGENTS, BANDITS, COLOURS, LABELS)

@@ -11,7 +11,7 @@ PI = lambda s: [1/4, 1/4, 1/4, 1/4]
 MAX_DELTA = 0.0001
 GAMMA = 1.0
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     p = GridworldNxM(N, M)
     V, _ = v_evaluation(PI, p, TERMINALS, MAX_DELTA, GAMMA)
     for n in range(N):

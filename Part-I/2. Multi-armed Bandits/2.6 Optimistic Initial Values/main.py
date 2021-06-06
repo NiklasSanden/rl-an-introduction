@@ -18,5 +18,5 @@ AGENTS = [
 COLOURS = ['r', 'b']
 LABELS = ['Optimistic', 'Epsilon greedy']
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     plotter(NUM_RUNS, STEPS, AGENTS, BANDITS, COLOURS, LABELS)

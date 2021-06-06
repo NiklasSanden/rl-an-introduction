@@ -34,7 +34,7 @@ def v_evaluation(PI, dynamics, terminals, max_delta, gamma, start_V=defaultdict(
             delta = max(delta, abs(old_est - V[state]))
         
         if log:
-            print("Policy evaluation delta:", delta)
+            print('Policy evaluation delta:', delta)
 
         if delta <= max_delta:
             break
@@ -64,7 +64,7 @@ def get_greedy_PI_from_V(V, dynamics, gamma, break_ties_randomly=False, should_r
         PI[state] = actions[best_action_idx]
     
     if log:
-        print("Policy updated")
+        print('Policy updated')
 
     return lambda s: { action : 1.0 if PI[s] == action else 0.0 for action in dynamics.get_actions(s) }
 
@@ -97,7 +97,7 @@ def v_value_iteration(dynamics, terminals, max_delta, gamma, start_V=defaultdict
             delta = max(delta, abs(old_est - V[state]))
         
         if log:
-            print("Value iteration delta:", delta)
+            print('Value iteration delta:', delta)
 
         if delta <= max_delta:
             break

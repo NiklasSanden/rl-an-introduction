@@ -20,5 +20,5 @@ AGENTS = [
 COLOURS = ['r', 'g', 'b', 'm']
 LABELS = ['Gradient baseline', 'Gradient no baseline', 'UCB', 'Constant Epsilon Greedy']
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     plotter(NUM_RUNS, STEPS, AGENTS, BANDITS, COLOURS, LABELS)

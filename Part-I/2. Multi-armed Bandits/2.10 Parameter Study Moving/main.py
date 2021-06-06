@@ -38,5 +38,5 @@ AGENTS = [
 COLOURS = ['r', 'g', 'b', 'k', 'm']
 LABELS = ['Epsilon', 'Gradient', 'UCB', 'Optimistic', 'Constant Epsilon']
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     parameter_plotter(NUM_RUNS, STEPS, AGENTS, PARAMETERS, BANDITS, COLOURS, LABELS, include_last_x_steps=STEPS//2)

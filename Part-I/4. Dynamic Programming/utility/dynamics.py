@@ -4,7 +4,7 @@ import pickle
 
 class ActionNode(object):
     def __init__(self, future_states=[], rewards=[], probabilities=[]):
-        assert len(future_states) == len(rewards) == len(probabilities), "Lists given to an ActionNode were of different lengths"
+        assert len(future_states) == len(rewards) == len(probabilities), 'Lists given to an ActionNode were of different lengths'
         
         self.transitions = []
         for (s_, r, p) in zip(future_states, rewards, probabilities):
@@ -18,7 +18,7 @@ class ActionNode(object):
 
 class StateNode(object):
     def __init__(self, actions, action_nodes=[]):
-        assert (not action_nodes) or (len(action_nodes) == len(action_nodes)), "action_nodes was not empty and its length was not equal to the length of actions"
+        assert (not action_nodes) or (len(action_nodes) == len(action_nodes)), 'action_nodes was not empty and its length was not equal to the length of actions'
         self.actions = actions
         self.transitions = {}
         for (idx, action) in enumerate(actions):
@@ -51,9 +51,9 @@ class DynamicsFunction(object):
         return self.states[s].get_actions()
     
 class DynamicsFunctionPickle(DynamicsFunction):
-    """
+    '''
     If the dynamics function is too large to keep in memory, this allows you to save each StateNode to disk and read it when needed.
-    """
+    '''
     def __init__(self, states):
         super(DynamicsFunctionPickle, self).__init__(states)
 
@@ -97,10 +97,10 @@ class GridworldNxM(DynamicsFunction):
         return default if n < 0 or n >= self.N or m < 0 or m >= self.M else (n, m)
 
 class JacksCarRental(DynamicsFunction):
-    """
+    '''
     cut_random_loop is necessary to make sure the P function fits in memory. A previous version inherited from DynamicsFunctionPickle to keep it on disk,
     but the amount of computation time to perform just a single iteration inside v_evaluation was too much for the entire P function.
-    """
+    '''
     def __init__(self, max_a=20, max_b=20, max_transfer=5, lambda_customer_a=3.0, lambda_customer_b=4.0, 
                        lambda_return_a=3.0, lambda_return_b=2.0, pay=10.0, cost=2.0, extended=False, cut_random_loop=10):
 
@@ -179,11 +179,11 @@ class JacksCarRental(DynamicsFunction):
 
 
 class GamblersProblem(DynamicsFunction):
-    """
+    '''
     This implementation does not allow action 0 in states that aren't terminal. The figure in the book
     will break ties for the policy by (seemingly) choosing the lowest action/bet that isn't 0, so this 
     implementation detail makes it easier to get the same result.
-    """
+    '''
     def __init__(self, p=0.4, goal=100):
         states = {}
         for state in range(1, goal):
