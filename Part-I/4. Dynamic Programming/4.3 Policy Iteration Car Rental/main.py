@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
     # Plot V
     ax = fig.add_subplot(1, 2, 2, projection='3d')
-    ax.plot_surface(x_grid, y_grid, v_array,cmap='viridis', edgecolor='none')
+    ax.plot_surface(x_grid, y_grid, v_array, cmap='viridis', edgecolor='none')
     ax.set_xlabel('#Cars at first location')
     ax.set_ylabel('#Cars at second location')
     ax.set_zlabel('V under PI')

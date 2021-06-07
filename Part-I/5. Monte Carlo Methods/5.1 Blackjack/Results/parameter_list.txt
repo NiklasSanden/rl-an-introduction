@@ -1,0 +1,5 @@
+EPISODES_1 = 10000
+EPISODES_2 = 500000
+ENVIRONMENT = SimplifiedBlackjack()
+AGENT = TrivialAgent(stick_after=20)
+GAMMA = 1.0
