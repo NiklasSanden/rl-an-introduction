@@ -60,6 +60,18 @@ class SimplifiedBlackjack(Environment):
 
         return (self.dealer_card, self.player_sum, self.usable_ace)
 
+    def exploring_starts_reset(self):
+        '''
+        This is used by exploring starts methods to give non-zero probability to starting in any state-action pair 
+        (in this case equal probability).
+        '''
+        self.dealer_card = np.random.choice(np.arange(1, 11))
+        self.usable_ace = np.random.rand() < 0.5
+        self.player_sum = np.random.choice(np.arange(12, 22))
+        action = np.random.choice(np.arange(0, 2))
+
+        return ((self.dealer_card, self.player_sum, self.usable_ace), action)
+
     def _draw_card(self):
         return min(10, np.random.choice(np.arange(1, 14)))
 

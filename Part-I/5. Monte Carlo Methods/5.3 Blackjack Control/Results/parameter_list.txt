@@ -1,0 +1,4 @@
+EPISODES = 50000000
+ENVIRONMENT = SimplifiedBlackjack()
+AGENT = BlackjackDeterministicAgent() # unlike the book our initial policy is arbitrary
+GAMMA = 1.0
