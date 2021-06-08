@@ -3,13 +3,14 @@ from tqdm import tqdm
 
 from collections import defaultdict
 
-def monte_carlo_v_prediction(env, agent, gamma, max_iterations, start_V=defaultdict(lambda: 0.0)):
+def monte_carlo_v_prediction(env, agent, gamma, max_iterations, start_V=defaultdict(lambda: 0.0), start_N=defaultdict(lambda: 0)):
     '''
     Unlike the pseudo-code in 5.1, this is both every-visit MC and it uses running averages (as described in Ch. 2)
     in order to not keep track of all of the returns.
+    The agent should be deterministic and callable with the state as parameter.
     '''
     V = start_V
-    N = defaultdict(lambda: 0)
+    N = start_N
     
     for i in tqdm(range(max_iterations)):
         states = [env.reset()]
@@ -29,4 +30,4 @@ def monte_carlo_v_prediction(env, agent, gamma, max_iterations, start_V=defaultd
             N[states[i]] += 1
             V[states[i]] += (1.0 / N[states[i]]) * (G - V[states[i]])
 
-    return V
+    return (V, N)

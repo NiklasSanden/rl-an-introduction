@@ -23,7 +23,7 @@ GAMMA = 1.0
 
 if __name__ == '__main__':
     # EPISODES_1
-    V = monte_carlo_v_prediction(ENVIRONMENT, AGENT, GAMMA, max_iterations=EPISODES_1)
+    V, N = monte_carlo_v_prediction(ENVIRONMENT, AGENT, GAMMA, max_iterations=EPISODES_1)
 
     v_array_ace = np.zeros((10, 10))
     v_array_no_ace = np.zeros((10, 10))
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     ax.set(title='No usable ace - ' + str(EPISODES_1) + ' episodes')
 
     # EPISODES_2
-    V = monte_carlo_v_prediction(ENVIRONMENT, AGENT, GAMMA, max_iterations=EPISODES_2 - EPISODES_1, start_V=V)
+    V, N = monte_carlo_v_prediction(ENVIRONMENT, AGENT, GAMMA, max_iterations=EPISODES_2 - EPISODES_1, start_V=V, start_N=N)
 
     v_array_ace = np.zeros((10, 10))
     v_array_no_ace = np.zeros((10, 10))
