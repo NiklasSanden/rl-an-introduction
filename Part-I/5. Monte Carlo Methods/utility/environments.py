@@ -4,6 +4,12 @@ class Environment(object):
     def __init__(self):
         pass
 
+    def get_actions(self, state):
+        '''
+        Returns the available actions for the state
+        '''
+        NotImplementedError()
+
     def step(self, action):
         '''
         Returns the observation of the next state, the reward, a terminal flag and a dictionary with debug information
@@ -22,6 +28,9 @@ class Environment(object):
 class SimplifiedBlackjack(Environment):
     def __init__(self):
         self.reset()
+
+    def get_actions(self, state):
+        return [0, 1]
 
     def step(self, action):
         '''
@@ -109,6 +118,9 @@ class InfiniteVarianceLoop(Environment):
     def __init__(self):
         self.reset()
 
+    def get_actions(self, state):
+        return [0, 1]
+
     def step(self, action):
         '''
         action = 0 : left
@@ -128,3 +140,78 @@ class InfiniteVarianceLoop(Environment):
         self.state = 0
         self.terminal_state = 1
         return self.state
+
+class Racetrack(Environment):
+    def __init__(self, max_y_speed, max_x_speed):
+        self.max_y_speed = max_y_speed
+        self.max_x_speed = max_x_speed
+        self.reset()
+
+    def get_actions(self, state):
+        return [(y, x) for y in range(-1, 2) for x in range(-1, 2)]
+
+    def step(self, action):
+        if np.random.rand() < 0.1:
+            action = (0, 0)
+        return self.step_after_noise(action)
+    
+    def step_after_noise(self, action):
+        dy, dx = action
+        self.vel_y = max(0, min(self.max_y_speed, self.vel_y + dy))
+        self.vel_x = max(0, min(self.max_x_speed, self.vel_x + dx))
+        self._advance_time()
+
+        if self._is_on_finish_line():
+            return ((self.y, self.x, self.vel_y, self.vel_x), 0.0, True, {})
+        elif self._is_OOB():
+            self.reset()
+        return ((self.y, self.x, self.vel_y, self.vel_x), -1.0, False, {})
+
+    def reset(self):
+        self._construct_track()
+        self.y, self.x = self.starting_line[np.random.choice(np.arange(len(self.starting_line)))]
+        self.vel_y = 0
+        self.vel_x = 0
+        return (self.y, self.x, self.vel_y, self.vel_x)
+
+    def _construct_track(self):
+        NotImplementedError()
+
+    def _advance_time(self):
+        new_y = self.y - self.vel_y
+        new_x = self.x + self.vel_x
+        while new_y != self.y or new_x != self.x:
+            dy = min(1, abs(new_y - self.y)) * np.sign(new_y - self.y)
+            dx = min(1, abs(new_x - self.x)) * np.sign(new_x - self.x)
+            self.y += dy
+            self.x += dx
+
+            if self._is_OOB() or self._is_on_finish_line():
+                return
+
+    def _is_OOB(self):
+        if self.y >= self.track.shape[0] or self.y < 0 or self.x >= self.track.shape[1] or self.x < 0:
+            return True
+        return not self.track[self.y, self.x]
+    
+    def _is_on_finish_line(self):
+        return (self.y, self.x) in self.finish_line
+
+class Racetrack_1(Racetrack):
+    def __init__(self, max_y_speed=5, max_x_speed=5):
+        super(Racetrack_1, self).__init__(max_y_speed, max_x_speed)
+
+    def _construct_track(self):
+        self.track = np.zeros((32, 17), dtype=bool)
+        self.track[0, 3:] = True
+        self.track[1:3, 2:] = True
+        self.track[3, 1:] = True
+        self.track[4:6, :] = True
+        self.track[6, :10] = True
+        self.track[7:14, :9] = True
+        self.track[14:22, 1:9] = True
+        self.track[22:29, 2:9] = True
+        self.track[29:, 3:9] = True
+        
+        self.starting_line = [(31, x) for x in range(3, 9)]
+        self.finish_line = [(y, 16) for y in range(6)]
