@@ -22,7 +22,7 @@ if __name__ == '__main__':
     fig = plt.figure()
     x_grid, y_grid = np.meshgrid(np.arange(1, 11), np.arange(12, 22))
 
-    Q, _ = monte_carlo_exploring_starts(ENVIRONMENT, AGENT, GAMMA, max_iterations=EPISODES)
+    Q, _ = monte_carlo_q_exploring_starts(ENVIRONMENT, AGENT, GAMMA, max_iterations=EPISODES)
 
     # V
     v_array_ace = np.zeros((10, 10))

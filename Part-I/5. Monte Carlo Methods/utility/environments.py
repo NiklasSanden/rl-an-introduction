@@ -72,6 +72,11 @@ class SimplifiedBlackjack(Environment):
 
         return ((self.dealer_card, self.player_sum, self.usable_ace), action)
 
+    def set_state(self, dealer_card, player_sum, usable_ace):
+        self.dealer_card = dealer_card
+        self.player_sum = player_sum
+        self.usable_ace = usable_ace
+
     def _draw_card(self):
         return min(10, np.random.choice(np.arange(1, 14)))
 
@@ -88,3 +93,14 @@ class SimplifiedBlackjack(Environment):
             sum -= 10
             usable_ace = False
         return (sum, usable_ace)
+
+class BlackjackSingleStartState(SimplifiedBlackjack):
+    def __init__(self, dealer_start, player_start, usable_ace_start):
+        self.dealer_start = dealer_start
+        self.player_start = player_start
+        self.usable_ace_start = usable_ace_start
+        super(BlackjackSingleStartState, self).__init__()
+
+    def reset(self):
+        self.set_state(self.dealer_start, self.player_start, self.usable_ace_start)
+        return (self.dealer_card, self.player_sum, self.usable_ace)

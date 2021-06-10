@@ -1,0 +1,10 @@
+NUM_RUNS = 100
+EPISODES = 10000
+(DEALER_START, PLAYER_START, USABLE_ACE_START) = (2, 13, True) # state to evaluate
+ENVIRONMENT = BlackjackSingleStartState(DEALER_START, PLAYER_START, USABLE_ACE_START)
+TARGET = TargetPolicy(stick_after=20)
+BEHAVIOUR = BehaviourPolicy()
+COLOURS = ['g', 'r']
+LABELS = ['Ordinary', 'Weighted']
+GAMMA = 1.0
+TRUE_VALUE = -0.27726 # See page 106 in the textbook
