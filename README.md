@@ -7,7 +7,10 @@ For reference, the origin of the "hack" used by some code files to import uninst
 * Chapter 2
   - [x] The environments in chapter 2 should take more parameters in their constructor such as the starting mean.
   - [x] The utilities framework in chapter 2 was not designed with *Gradient Bandits* in mind. The implementation for it is therefore currently a stand-alone class in the *agent.py* file.
-  - [x] The results of *2.10 The 10-armed Testbed Parameter Study Moving* used a very low NUM_RUNS because of the significant time for a single run. Therefore, the results are not reliable until it is rerun with a much higher NUM_RUNS.
+  - [x] The results of *2.10 Parameter Study Moving* used a very low NUM_RUNS because of the significant time for a single run. Therefore, the results are not reliable until it is rerun with a much higher NUM_RUNS.
+* Chapter 5
+  - [ ] Rerun the experiments to make sure code changes didn't break them.
+  - [ ] *5.7 Racetrack MC Control* currently only has results for on-policy MC. It supports off-policy but the display of the results will have to be modified to avoid infinite loops of the deterministic policy (see the main.py file for more details in a comment).
 
 ## Ideas
 * Chapter 3
