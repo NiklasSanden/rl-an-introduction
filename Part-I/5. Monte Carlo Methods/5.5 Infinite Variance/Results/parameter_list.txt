@@ -1,0 +1,6 @@
+NUM_RUNS = 10
+EPISODES = 10000000
+ENVIRONMENT = InfiniteVarianceLoop()
+TARGET = TargetPolicy()
+BEHAVIOUR = BehaviourPolicy()
+GAMMA = 1.0

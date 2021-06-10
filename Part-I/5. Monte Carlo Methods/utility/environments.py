@@ -104,3 +104,27 @@ class BlackjackSingleStartState(SimplifiedBlackjack):
     def reset(self):
         self.set_state(self.dealer_start, self.player_start, self.usable_ace_start)
         return (self.dealer_card, self.player_sum, self.usable_ace)
+
+class InfiniteVarianceLoop(Environment):
+    def __init__(self):
+        self.reset()
+
+    def step(self, action):
+        '''
+        action = 0 : left
+        action = 1 : right
+        '''
+        if action == 0:
+            if np.random.rand() < 0.9:
+                return (self.state, 0.0, False, {})
+            else:
+                return (self.terminal_state, 1.0, True, {})
+        elif action == 1:
+            return (self.terminal_state, 0.0, True, {})
+        else:
+            Exception('Undefined action:', action)
+
+    def reset(self):
+        self.state = 0
+        self.terminal_state = 1
+        return self.state
