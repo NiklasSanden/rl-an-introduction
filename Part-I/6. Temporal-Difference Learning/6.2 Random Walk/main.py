@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from utility.environments import *
-from utility.policy_iteration import *
+from utility.policy_evaluation import *
+from utility.misc import *
 
 # PARAMETERS
 NUM_STATES = 5
@@ -25,13 +26,6 @@ MC_ALPHAS = [0.01, 0.02, 0.03, 0.04]
 TD_COLOUR = 'blue'
 MC_COLOUR = 'red'
 LINE_STYLES = ['solid', 'dotted', 'dashed', 'dashdot']
-
-def RMS_error(V):
-    error = 0
-    for s in range(NUM_STATES):
-        error += (V[s] - TRUE_VALUES[s]) ** 2
-    error /= NUM_STATES
-    return math.sqrt(error)
 
 if __name__ == '__main__':
     fig = plt.figure()
@@ -59,13 +53,13 @@ if __name__ == '__main__':
             TD_V = defaultdict(lambda: 0.5)
             for episode in range(EPISODES):
                 TD_V = TD0_v_prediction(ENVIRONMENT, AGENT, GAMMA, max_iterations=1, alpha=TD_ALPHAS[i], start_V=TD_V, terminals=TERMINALS, log=False)
-                TD_errors[run, episode, i] = RMS_error(TD_V)
+                TD_errors[run, episode, i] = RMS_error(TD_V, NUM_STATES, TRUE_VALUES)
         
         for i in range(len(MC_ALPHAS)):
             MC_V = defaultdict(lambda: 0.5)
             for episode in range(EPISODES):
                 MC_V = monte_carlo_v_prediction(ENVIRONMENT, AGENT, GAMMA, max_iterations=1, alpha=MC_ALPHAS[i], start_V=MC_V, log=False)
-                MC_errors[run, episode, i] = RMS_error(MC_V)
+                MC_errors[run, episode, i] = RMS_error(MC_V, NUM_STATES, TRUE_VALUES)
     
     TD_errors = np.average(TD_errors, axis=0)
     MC_errors = np.average(MC_errors, axis=0)
