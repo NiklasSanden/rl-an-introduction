@@ -1,0 +1,2 @@
+The last 1000 episodes had an average of 14.11 time steps
+Optimal path yields 11.06906906906907 time steps

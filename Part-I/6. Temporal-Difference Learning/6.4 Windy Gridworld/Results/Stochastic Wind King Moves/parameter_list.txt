@@ -1,0 +1,6 @@
+EPISODES = 20000
+AVERAGE_X_EPISODES = 1000
+ENVIRONMENT = WindyGridworld(rows=7, cols=10, wind_values=[0, 0, 0, 1, 1, 1, 2, 2, 1, 0], is_stochastic=True, king_moves=True, can_pass=False)
+AGENT = EpsilonGreedyAgent(ENVIRONMENT, epsilon=0.1)
+GAMMA = 1.0
+ALPHA = 0.05

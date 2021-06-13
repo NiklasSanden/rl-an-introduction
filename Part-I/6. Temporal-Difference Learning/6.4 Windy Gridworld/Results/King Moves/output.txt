@@ -1,0 +1,2 @@
+The last 100 episodes had an average of 8.81 time steps
+Optimal path yields 7.0 time steps
