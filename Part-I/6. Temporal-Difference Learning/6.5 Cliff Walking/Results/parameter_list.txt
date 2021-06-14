@@ -1,0 +1,8 @@
+NUM_RUNS = 1000
+EPISODES = 500
+ENVIRONMENT = CliffWalkingSumOfRewardsWrapper(rows=4, cols=12)
+AGENT = EpsilonGreedyAgent(ENVIRONMENT, epsilon=0.1)
+GAMMA = 1.0
+ALPHA = 0.5
+SARSA_COLOUR = 'blue'
+Q_COLOUR = 'red'

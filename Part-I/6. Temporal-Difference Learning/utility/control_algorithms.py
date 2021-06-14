@@ -1,3 +1,4 @@
+import numpy as np
 from tqdm import tqdm
 
 from collections import defaultdict
@@ -20,6 +21,28 @@ def sarsa_on_policy_td_q(env, agent, gamma, max_iterations, alpha=0.1, start_Q=d
                 next_action = agent(next_state, Q)
                 Q[(state, action)] += alpha * (reward + gamma * Q[(next_state, next_action)] - Q[(state, action)])
                 action = next_action
+            state = next_state
+
+    return Q
+
+def q_learning(env, agent, gamma, max_iterations, alpha=0.1, start_Q=defaultdict(lambda: 0.0), log=True):
+    '''
+    The agent should be callable with the state and Q-function as parameters and return one action.
+    '''
+    Q = start_Q
+
+    for i in tqdm(range(max_iterations), disable=(not log)):
+        state = env.reset()
+        terminal = False
+        while not terminal:
+            action = agent(state, Q)
+            next_state, reward, terminal, _ = env.step(action)
+            if terminal: # just in case the user gave a start_Q where Q(terminal, a) != 0
+                Q[(state, action)] += alpha * (reward - Q[(state, action)])
+            else:
+                actions = env.get_actions(next_state)
+                max_q_next_state = np.max(np.array([Q[(next_state, a)] for a in actions]))
+                Q[(state, action)] += alpha * (reward + gamma * max_q_next_state - Q[(state, action)])
             state = next_state
 
     return Q

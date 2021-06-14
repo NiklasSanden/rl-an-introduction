@@ -101,3 +101,46 @@ class WindyGridworld(Environment):
     
     def _keep_pos_in_bounds(self):
         self.pos = (min(self.rows - 1, max(0, self.pos[0])), min(self.cols - 1, max(0, self.pos[1])))
+
+class CliffWalking(Environment):
+    def __init__(self, rows, cols):
+        self.rows = rows
+        self.cols = cols
+        self.start = (rows - 1, 0)
+        self.end = (rows - 1, cols - 1)
+        self.cliffs = set([(rows - 1, c) for c in range(1, cols - 1)])
+        self.reset()
+
+    def get_actions(self, state):
+        return [(1, 0), (0, 1), (-1, 0), (0, -1)]
+    
+    def step(self, action):
+        self.pos = (self.pos[0] + action[0], self.pos[1] + action[1])
+        self._keep_pos_in_bounds()
+
+        if self.pos in self.cliffs:
+            self.pos = self.start
+            return (self.pos, -100, False, {})
+        else:
+            terminal = self.end == self.pos
+            return (self.pos, -1, terminal, {})
+
+    def reset(self):
+        self.pos = self.start
+        return self.pos
+
+    def _keep_pos_in_bounds(self):
+        self.pos = (min(self.rows - 1, max(0, self.pos[0])), min(self.cols - 1, max(0, self.pos[1])))
+
+class CliffWalkingSumOfRewardsWrapper(CliffWalking):
+    '''
+    This is used to extract the sum of rewards for each episode
+    '''
+    def step(self, action):
+        next_state, reward, terminal, info = super(CliffWalkingSumOfRewardsWrapper, self).step(action)
+        self.rewards_sum += reward
+        return (next_state, reward, terminal, info)
+
+    def reset(self):
+        self.rewards_sum = 0
+        return super(CliffWalkingSumOfRewardsWrapper, self).reset()
