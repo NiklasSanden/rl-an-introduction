@@ -1,0 +1,19 @@
+ENVIRONMENT = CliffWalkingSumOfRewardsWrapper(rows=4, cols=12)
+AGENT = EpsilonGreedyAgent(ENVIRONMENT, epsilon=0.1)
+GAMMA = 1.0
+ALPHAS = np.linspace(0.1, 1.0, 19)
+ALGORITHMS = [sarsa_on_policy_td_q, q_learning, expected_sarsa_on_policy]
+# INTERIM PARAMETERS
+NUM_RUNS = 1000
+EPISODES = 100
+LABELS = ['Interim Sarsa', 'Interim Q-learning', 'Interim Expected Sarsa']
+COLOURS = ['blue', 'black', 'red']
+MARKERS = ['v', 's', 'x']
+LINESTYLES = ['dotted'] * 3
+# ASYMPTOTIC PARAMETERS
+A_NUM_RUNS = 10
+A_EPISODES = 10000
+A_LABELS = ['Asymptotic Sarsa', 'Asymptotic Q-learning', 'Asymptotic Expected Sarsa']
+A_COLOURS = COLOURS
+A_MARKERS = MARKERS
+A_LINESTYLES = ['solid'] * 3

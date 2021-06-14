@@ -20,3 +20,14 @@ class EpsilonGreedyAgent(object):
         else:
             best_index = argmax(np.array([Q[(state, a)] for a in actions]))
             return actions[best_index]
+
+    def get_probs(self, state, Q):
+        '''
+        technically each tie of argmax should share the 1.0 - epsilon but this is fine since the 
+        use case is to multiply the probability with the Q value which are the same in case of a tie.
+        '''
+        actions = self.env.get_actions(state)
+        probs = [self.epsilon / len(actions)] * len(actions)
+        best_index = np.argmax(np.array([Q[(state, a)] for a in actions]))
+        probs[best_index] += 1.0 - self.epsilon
+        return (actions, probs)
