@@ -36,7 +36,7 @@ if __name__ == '__main__':
             double_Q_learning_left[run, i] = 100 * (AGENT.counter != 1)
     Q_learning_left = np.average(Q_learning_left, axis=0)
     double_Q_learning_left = np.average(double_Q_learning_left, axis=0)
-    X = np.arange(1, 301)
+    X = np.arange(1, EPISODES + 1)
 
     ax = fig.add_subplot()
     ax.plot(X, Q_learning_left, color='red', label='Q-learning')
