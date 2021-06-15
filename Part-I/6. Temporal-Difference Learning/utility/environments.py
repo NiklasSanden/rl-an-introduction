@@ -144,3 +144,29 @@ class CliffWalkingSumOfRewardsWrapper(CliffWalking):
     def reset(self):
         self.rewards_sum = 0
         return super(CliffWalkingSumOfRewardsWrapper, self).reset()
+
+class MaximizationBiasExample(Environment):
+    def __init__(self, actions_in_B):
+        self.actions_in_B = actions_in_B
+        self.reset()
+
+    def get_actions(self, state):
+        if state == 'A':
+            return [0, 1]
+        else:
+            return [action for action in range(self.actions_in_B)]
+    
+    def step(self, action):
+        if self.state == 'A' and action == 1:
+            self.state = 'terminal'
+            return (self.state, 0, True, {})
+        elif self.state == 'A':
+            self.state = 'B'
+            return (self.state, 0, False, {})
+        else:
+            self.state = 'terminal'
+            return (self.state, np.random.randn() - 0.1, True, {})
+
+    def reset(self):
+        self.state = 'A'
+        return self.state

@@ -1,0 +1,6 @@
+NUM_RUNS = 10000
+EPISODES = 300
+ENVIRONMENT = MaximizationBiasExample(actions_in_B=10)
+AGENT = EpsilonGreedyAgent(ENVIRONMENT, epsilon=0.1)
+GAMMA = 1.0
+ALPHA = 0.1

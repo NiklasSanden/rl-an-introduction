@@ -20,7 +20,7 @@ class EpsilonGreedyAgent(object):
         else:
             best_index = argmax(np.array([Q[(state, a)] for a in actions]))
             return actions[best_index]
-
+    
     def get_probs(self, state, Q):
         '''
         technically each tie of argmax should share the 1.0 - epsilon but this is fine since the 
@@ -31,3 +31,15 @@ class EpsilonGreedyAgent(object):
         best_index = np.argmax(np.array([Q[(state, a)] for a in actions]))
         probs[best_index] += 1.0 - self.epsilon
         return (actions, probs)
+    
+    def get_action_double_Q(self, state, Q_1, Q_2):
+        '''
+        Used to select an action from the sum of two Q-functions for double learning (such as double Q-learning)
+        '''
+        self.counter += 1
+        actions = self.env.get_actions(state)
+        if np.random.rand() < self.epsilon:
+            return actions[np.random.choice(np.arange(len(actions)))]
+        else:
+            best_index = argmax(np.array([Q_1[(state, a)] + Q_2[(state, a)] for a in actions]))
+            return actions[best_index]
