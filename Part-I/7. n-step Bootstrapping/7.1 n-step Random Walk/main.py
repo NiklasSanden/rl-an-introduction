@@ -28,14 +28,13 @@ if __name__ == '__main__':
     for run in tqdm(range(NUM_RUNS)):
         for i in range(len(N_VALUES)):
             for j in range(len(ALPHAS)):
-                AGENT.reset() # use the same set of actoins/walks for each parameter setting
+                AGENT.reset() # use the same set of actions/walks for each parameter setting
                 V = defaultdict(lambda: 0.0)
                 for episode in range(EPISODES):
                     V = n_step_TD(ENVIRONMENT, AGENT, GAMMA, max_iterations=1, n=N_VALUES[i], alpha=ALPHAS[j], start_V=V, log=False)
                     errors[run, episode, j, i] = RMS_error(V, NUM_STATES, TRUE_VALUES)
     
-    errors = np.average(errors, axis=0)
-    errors = np.average(errors, axis=0)
+    errors = np.average(errors, axis=(0, 1))
     
     ax = fig.add_subplot()
     for i in range(len(N_VALUES)):
