@@ -1,0 +1,10 @@
+NUM_RUNS = 100
+EPISODES = 10
+NUM_STATES = 19
+ENVIRONMENT = RandomWalk(num_states=NUM_STATES)
+AGENT = PredeterminedActions(ENVIRONMENT)
+GAMMA = 1.0
+TRUE_VALUES = [i / (NUM_STATES + 1) for i in range(-NUM_STATES + 1, NUM_STATES + 1, 2)]
+ALPHAS = [x for x in np.linspace(0, 1, num=100)]
+N_VALUES = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512]
+COLOURS = ['red', 'green', 'blue', 'black', 'pink', 'lightblue', 'purple', 'magenta', 'orange', 'brown']
