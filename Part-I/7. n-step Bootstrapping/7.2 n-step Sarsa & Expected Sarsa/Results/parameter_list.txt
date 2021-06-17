@@ -1,0 +1,12 @@
+NUM_RUNS = 500
+EPISODES = 200
+ENVIRONMENT = WindyGridworld(rows=7, cols=10, wind_values=[0, 0, 0, 1, 1, 1, 2, 2, 1, 0], is_stochastic=False, king_moves=False, can_pass=False)
+AGENT = EpsilonGreedyAgent(ENVIRONMENT, epsilon=0.1)
+N_VALUES = [1, 4, 8]
+ALGORITHMS = [n_step_sarsa, n_step_expected_sarsa_on_policy]
+GAMMA = 1.0
+ALPHAS = [0.5, 0.2, 0.1] # this is sort of akward but they want very different learning rates for such few episodes and it impacts
+                         # the results here (look at 7.1 Sum of TD-errors Comparison). Note that this is a different environment etc.
+COLOURS = ['red', 'green', 'blue'] # each n_value has a different colour
+LINESTYLES = ['solid', 'dashed']   # and each algorithm a different linestyle
+ALGORITHM_LABELS = ['sarsa', 'expected sarsa']

@@ -1,6 +1,8 @@
 import numpy as np
 from tqdm import tqdm
 
+from .misc import calculate_gammas
+
 from collections import defaultdict
 from collections import deque
 
@@ -9,10 +11,7 @@ def n_step_TD(env, agent, gamma, max_iterations, n, alpha=0.1, start_V=defaultdi
     The agent should be callable with the state as parameter and return one action.
     '''
     V = start_V
-
-    gammas = np.ones(n + 1) # precalculate all gammas ** i
-    for i in range(1, len(gammas)):
-        gammas[i] = gammas[i - 1] * gamma
+    gammas = calculate_gammas(gamma, n)
     
     for i in tqdm(range(max_iterations), disable=(not log)):
         states = deque([env.reset()])
@@ -48,10 +47,7 @@ def n_step_sum_of_TD_errors(env, agent, gamma, max_iterations, n, use_latest_V_f
     The agent should be callable with the state as parameter and return one action.
     '''
     V = start_V
-
-    gammas = np.ones(n + 1) # precalculate all gammas ** i
-    for i in range(1, len(gammas)):
-        gammas[i] = gammas[i - 1] * gamma
+    gammas = calculate_gammas(gamma, n)
     
     for i in tqdm(range(max_iterations), disable=(not log)):
         states = [env.reset()]
@@ -90,10 +86,7 @@ def n_step_sum_of_TD_errors_iterative(env, agent, gamma, max_iterations, n, alph
     The agent should be callable with the state as parameter and return one action.
     '''
     V = start_V
-
-    gammas = np.ones(n + 1) # precalculate all gammas ** i
-    for i in range(1, len(gammas)):
-        gammas[i] = gammas[i - 1] * gamma
+    gammas = calculate_gammas(gamma, n)
     
     for i in tqdm(range(max_iterations), disable=(not log)):
         states = deque([env.reset()])

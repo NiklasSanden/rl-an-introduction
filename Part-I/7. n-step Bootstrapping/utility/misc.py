@@ -25,3 +25,9 @@ def RMS_error(V, num_states, true_values):
         error += (V[s] - true_values[s]) ** 2
     error /= num_states
     return math.sqrt(error)
+
+def calculate_gammas(gamma, highest_power):
+    gammas = np.ones(highest_power + 1)
+    for i in range(1, len(gammas)):
+        gammas[i] = gammas[i - 1] * gamma
+    return gammas
