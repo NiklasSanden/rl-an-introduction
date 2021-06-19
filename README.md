@@ -18,6 +18,7 @@ For reference, the origin of the "hack" used by some code files to import uninst
 * Chapter 7
   - [x] The 7.3 experiment is temporary. It is supposed to compare *Per-decision Methods* with ordinary importance sampling (i.e. 7.4 & 7.3 respectively) as described in exercise 7.10. This experiment is post-poned until I understand the theory in 7.4 with respect to action values (equation 7.14). 
   - [ ] Rewrite *n_step_sarsa_off_policy* and potentially *n_step_sarsa_off_policy_Q_sigma* as well. The pseudo code in the book includes one variant of off-policy where the importance sampling is calculated with the lastest Q-estimates and one where the PI(a|s)/b(a|s) is saved when the action was picked. Decide which implementation should be used and make sure that all the indices are correct. The experiment in 7.4 could be extended to include the *Tree Backup* from 7.5 and *Q(sigma)* from 7.6. 7.4 and 7.5 is implemented using Q(sigma=1) and Q(sigma=0) respectively.
+  - [ ] Potentially rewrite all n-step methods to use index access and store mod n+1. Perhaps even some which currently use deques should consider using this for the sake of consistency.
   - [ ] Do exercise 7.10. Note that this is in the prediction case!
 
 ## Ideas
