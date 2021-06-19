@@ -103,3 +103,9 @@ class WindyGridworld(Environment):
     
     def _keep_pos_in_bounds(self):
         self.pos = (min(self.rows - 1, max(0, self.pos[0])), min(self.cols - 1, max(0, self.pos[1])))
+
+class WindyGridworldPositiveRewardWrapper(WindyGridworld):
+    def step(self, action):
+        next_state, reward, terminal, info = super(WindyGridworldPositiveRewardWrapper, self).step(action)
+        reward = 1.0 if terminal else 0.0
+        return (next_state, reward, terminal, info)

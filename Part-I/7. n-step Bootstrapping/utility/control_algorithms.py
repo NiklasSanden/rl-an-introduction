@@ -90,10 +90,6 @@ def n_step_sarsa_off_policy(env, agent, behaviour, gamma, max_iterations, n, alp
     '''
     The agent and behaviour should have a method (get_probs) that takes in a state and Q and outputs all of the 
     available actions and the probability of picking each action (pair of lists).
-    Since this implementation allows the behaviour policy to change, it calculates the rho_denominator when actions are
-    selected and saves the result, so later changes to Q does not alter the probabilities for previous actions. However,
-    we can't save the result for the agent since we want it to always use the latest Q when updating, which is why the
-    numerator of rho can't be computed iteratively like the denominator can.
     '''
     Q = start_Q
     gammas = calculate_gammas(gamma, n)
@@ -104,8 +100,9 @@ def n_step_sarsa_off_policy(env, agent, behaviour, gamma, max_iterations, n, alp
         behaviour.counter += 1 # add to counter
         _, behaviour_probs = behaviour.get_probs(states[-1], Q)
         action_index = np.random.choice(np.arange(len(behaviour_probs)), p=behaviour_probs)
-        rho_denominator = 1.0 # when updating action values the action that is updated should not be adjusted
-        b_probs = deque()     # by importance sampling
+        target_probs = deque()          # when updating action values the action
+        rho_denominator = 1.0           # that is updated should not be adjusted
+        rho_denominator_probs = deque() # by importance sampling
 
         action_indices = deque([action_index])
         rewards = deque()
@@ -123,25 +120,21 @@ def n_step_sarsa_off_policy(env, agent, behaviour, gamma, max_iterations, n, alp
                 if not terminal:
                     behaviour.counter += 1 # add to counter
                     _, behaviour_probs = behaviour.get_probs(states[-1], Q)
+                    _, agent_probs = agent.get_probs(states[-1], Q)
                     action_index = np.random.choice(np.arange(len(behaviour_probs)), p=behaviour_probs)
+                    target_probs.append(agent_probs[action_index])
                     rho_denominator *= behaviour_probs[action_index]
-                    b_probs.append(behaviour_probs[action_index])
+                    rho_denominator_probs.append(behaviour_probs[action_index])
                     action_indices.append(action_index)
             
             # n_step update
             if len(rewards) == n or terminal:
                 rho = 1.0
-                if len(b_probs) > 0: # this is only true for the last update (regardless of n)
-                    # calculate rho
-                    rho_numerator = 1.0
-                    states_list = list(states)[1:]           # the action to update should not be  
-                    actions_list = list(action_indices)[1:]  # adjusted (see above comment)
-                    for a, s in zip(actions_list, states_list):
-                        _, agent_probs = agent.get_probs(s, Q)
-                        rho_numerator *= agent_probs[a]
-                    rho = rho_numerator / rho_denominator
-                    b_prob = b_probs.popleft()
-                    rho_denominator /= b_prob
+                if len(rho_denominator_probs) > 0: # this is only true for the last update (regardless of n)
+                    rho = np.prod(np.array(target_probs)) / rho_denominator
+                    target_probs.popleft()
+                    first_rho_prob = rho_denominator_probs.popleft()
+                    rho_denominator /= first_rho_prob
 
                 # update
                 state_to_update = states.popleft()
@@ -158,5 +151,72 @@ def n_step_sarsa_off_policy(env, agent, behaviour, gamma, max_iterations, n, alp
                 first_reward = rewards.popleft()
                 G -= first_reward
                 G /= gamma
+
+    return Q
+
+def n_step_sarsa_off_policy_control_variate(env, agent, behaviour, gamma, max_iterations, n, alpha=0.1, start_Q=defaultdict(lambda: 0.0), log=True):
+    return n_step_sarsa_off_policy_Q_sigma(env, agent, behaviour, gamma, max_iterations, n, sigma=1, alpha=alpha, start_Q=start_Q, log=log)
+
+def n_step_sarsa_off_policy_tree_backup(env, agent, behaviour, gamma, max_iterations, n, sigma, alpha=0.1, start_Q=defaultdict(lambda: 0.0), log=True):
+    return n_step_sarsa_off_policy_Q_sigma(env, agent, behaviour, gamma, max_iterations, n, sigma=0, alpha=alpha, start_Q=start_Q, log=log)
+
+def n_step_sarsa_off_policy_Q_sigma(env, agent, behaviour, gamma, max_iterations, n, sigma, alpha=0.1, start_Q=defaultdict(lambda: 0.0), log=True):
+    '''
+    The agent and behaviour should have a method (get_probs) that takes in a state and Q and outputs all of the 
+    available actions and the probability of picking each action (pair of lists).
+    This only supports one value of sigma for each choice.
+    '''
+    Q = start_Q
+
+    for i in tqdm(range(max_iterations), disable=(not log)):
+        states = [env.reset()]
+        
+        behaviour.counter += 1 # add to counter
+        available_actions, behaviour_probs = behaviour.get_probs(states[-1], Q)
+        action_index = np.random.choice(np.arange(len(behaviour_probs)), p=behaviour_probs)
+        action_indices = [action_index]
+        actions = [available_actions[action_index]]
+        
+        rewards = [0]   # dummy reward for the sake of the first one being t + 1
+        rho_probs = [0] # another dummy value since the first rho is at t + 1 when updating action values
+        
+        T = float('inf')
+        tau = -1
+        t = 0
+        while tau != T - 1:
+            if t < T:
+                next_state, reward, terminal, _ = env.step(actions[-1])
+
+                states.append(next_state)
+                rewards.append(reward)
+
+                if terminal:
+                    T = t + 1
+                else:
+                    behaviour.counter += 1 # add to counter
+                    available_actions, behaviour_probs = behaviour.get_probs(states[-1], Q)
+                    _, pi_probs = agent.get_probs(states[-1], Q)
+                    action_index = np.random.choice(np.arange(len(behaviour_probs)), p=behaviour_probs)
+                    rho_probs.append(pi_probs[action_index] / behaviour_probs[action_index])
+                    action_indices.append(action_index)
+                    actions.append(available_actions[action_index])
+
+            tau = t - n + 1
+            
+            # n_step update
+            if tau >= 0:
+                if t + 1 < T:
+                    G = Q[(states[t + 1], actions[t + 1])]
+                for k in range(min(t + 1, T), (tau + 1) - 1, -1): # (tau + 1) - 1 to go through tau + 1
+                    if k == T:
+                        G = rewards[T]
+                    else:
+                        available_actions, agent_probs = agent.get_probs(states[k], Q)
+                        V_approx = np.sum(np.array(agent_probs) * np.array([Q[(states[k], a)] for a in available_actions]))
+                        G = rewards[k] + gamma * (sigma * rho_probs[k] + (1 - sigma) * agent_probs[action_indices[k]]) * (G - Q[(states[k], actions[k])]) + gamma * V_approx
+
+                Q[(states[tau], actions[tau])] += alpha * (G - Q[(states[tau], actions[tau])])
+            
+            t += 1
 
     return Q
