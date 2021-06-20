@@ -1,0 +1,8 @@
+NUM_RUNS = 30
+EPISODES = 50
+ENVIRONMENT = DynaMaze()
+AGENT = NumberOfActionsWrapper(EpsilonGreedyAgent(ENVIRONMENT, epsilon=0.1))
+N_VALUES = [0, 5, 50]
+GAMMA = 0.95
+ALPHA = 0.1
+COLOURS = ['cyan', 'green', 'red']

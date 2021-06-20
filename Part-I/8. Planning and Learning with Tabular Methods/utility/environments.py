@@ -1,0 +1,71 @@
+class Environment(object):
+    def get_actions(self, state):
+        '''
+        Returns the available actions for the state
+        '''
+        NotImplementedError()
+
+    def step(self, action):
+        '''
+        Returns the observation of the next state, the reward, a terminal flag and a dictionary with debug information
+        '''
+        NotImplementedError()
+
+    def render(self):
+        pass
+
+    def reset(self):
+        '''
+        Returns the initial observation of the starting state
+        '''
+        NotImplementedError()
+
+class CumulativeRewardWrapper(Environment):
+    def __init__(self, environment):
+        self.environment = environment
+        self.reset()
+
+    def get_cumulative_reward(self):
+        return self.cumulative_reward
+
+    def get_actions(self, state):
+        return self.environment.get_actions(state)
+
+    def step(self, action):
+        next_state, reward, terminal, info = self.environment.step(action)
+        self.cumulative_reward += reward
+        return (next_state, reward, terminal, info)
+
+    def render(self):
+        self.environment.render()
+
+    def reset(self):
+        self.cumulative_reward = 0
+        return self.environment.reset()
+
+class DynaMaze(Environment):
+    def __init__(self, rows=6, cols=9, start=(2, 0), end=(0, 8), blocks={(1, 2), (2, 2), (3, 2), (4, 5), (0, 7), (1, 7), (2, 7)}):
+        self.rows = rows
+        self.cols = cols
+        self.start = start
+        self.end = end
+        self.blocks = blocks
+        self.reset()
+
+    def get_actions(self, state):
+        return [(1, 0), (0, 1), (-1, 0), (0, -1)]
+    
+    def step(self, action):
+        new_pos = (self.pos[0] + action[0], self.pos[1] + action[1])
+        if not self._is_invalid_state(new_pos):
+            self.pos = new_pos
+        
+        terminal = self.end == self.pos
+        return (self.pos, 1 if terminal else 0, terminal, {})
+
+    def reset(self):
+        self.pos = self.start
+        return self.pos
+
+    def _is_invalid_state(self, state):
+        return (state in self.blocks) or state[0] < 0 or state[0] >= self.rows or state[1] < 0 or state[1] >= self.cols
