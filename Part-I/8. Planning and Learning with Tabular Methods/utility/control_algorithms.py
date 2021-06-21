@@ -87,7 +87,7 @@ def dyna_Q_plus_greedy_exercise_8_4(env, gamma, max_episodes, n, kappa, alpha=0.
                                     tau=dict(), time_step=0, log=True):
     '''
     As a footnote in the book describes, for every state-action pair not visited, the model should expect it to transition
-    to itself with a reward of 0. This is especially important here since it is completely greedy.
+    to itself with a reward of 0. This is especially important here since this implementation is ALWAYS completely greedy.
     '''
     for _ in tqdm(range(max_episodes), disable=(not log)):
         state = env.reset()

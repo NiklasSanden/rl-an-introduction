@@ -1,0 +1,14 @@
+NUM_RUNS = 10
+TIME_STEPS = 6000
+ROWS = 6
+COLS = 9
+ENVIRONMENT = CumulativeRewardPerTimestepWrapper(ChangingMaze(rows=ROWS, cols=COLS, start=(5, 3), end=(0, 8), blocks=[(3, c) for c in range(1, 9)],
+                                                              changed_blocks=[(3, c) for c in range(1, 8)], time_steps_until_change=3000))
+DYNA_Q_AGENT = EpsilonGreedyAgent(ENVIRONMENT, epsilon=0.1)
+DYNA_Q_PLUS_AGENT = EpsilonGreedyAgent(ENVIRONMENT, epsilon=0.0)
+N = 50
+KAPPA = 0.001
+GAMMA = 0.95
+ALPHA = 1.0
+COLOURS = ['red', 'green', 'blue']
+LABELS = ['Dyna-Q+', 'Dyna-Q+ alternative', 'Dyna-Q']
