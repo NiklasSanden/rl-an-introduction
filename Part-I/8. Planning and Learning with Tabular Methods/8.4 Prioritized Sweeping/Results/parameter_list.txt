@@ -1,0 +1,11 @@
+NUM_RUNS = 10
+NUM_DOUBLES = 5 # 8 in the book
+ENVIRONMENT = DynaMaze()
+DYNA_Q_AGENT = EpsilonGreedyAgent(ENVIRONMENT, epsilon=0.5)
+PRIO_AGENT = EpsilonGreedyAgent(ENVIRONMENT, epsilon=1.0)
+N = 5
+THETA = 1e-9
+GAMMA = 0.95
+ALPHA = 1.0
+COLOURS = ['blue', 'red']
+LABELS = ['Dyna-Q', 'Prioritized sweeping']
