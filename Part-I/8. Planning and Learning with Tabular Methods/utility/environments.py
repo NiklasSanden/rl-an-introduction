@@ -3,13 +3,13 @@ class Environment(object):
         '''
         Returns the available actions for the state
         '''
-        NotImplementedError()
+        raise NotImplementedError()
 
     def step(self, action):
         '''
         Returns the observation of the next state, the reward, a terminal flag and a dictionary with debug information
         '''
-        NotImplementedError()
+        raise NotImplementedError()
 
     def render(self):
         pass
@@ -18,7 +18,7 @@ class Environment(object):
         '''
         Returns the initial observation of the starting state
         '''
-        NotImplementedError()
+        raise NotImplementedError()
 
 class CumulativeRewardWrapper(Environment):
     def __init__(self, environment):

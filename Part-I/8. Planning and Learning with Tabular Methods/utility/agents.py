@@ -7,14 +7,14 @@ class Agent(object):
         self.env = env
 
     def __call__(self, state, Q):
-        NotImplementedError()
+        raise NotImplementedError()
     
     def get_actions_and_probs(self, state, Q):
         '''
         Returns a pair with one list of all of the actions available in the state and an np-array 
         with the probability of each action being selected (in the same order as the first list).
         '''
-        NotImplementedError()
+        raise NotImplementedError()
 
     def get_probs_as_dict(self, state, Q):
         actions, probs = self.get_actions_and_probs(state, Q)
