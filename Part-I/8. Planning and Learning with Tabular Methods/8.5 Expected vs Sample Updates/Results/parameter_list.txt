@@ -1,0 +1,3 @@
+NUM_RUNS = 500
+B_VALUES = [2, 10, 100, 1000, 10000]
+COLOURS = ['blue', 'green', 'yellow', 'red', 'magenta']
