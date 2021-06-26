@@ -1,3 +1,5 @@
+import numpy as np
+
 class Environment(object):
     def get_actions(self, state):
         '''
@@ -107,3 +109,51 @@ class ChangingMaze(DynaMaze):
     def reset_change(self):
         self.blocks = self.start_blocks
         self.time_steps_left = self.time_steps_until_change
+
+class TrajectorySamplingEnvironment(Environment):
+    def __init__(self, num_states, b, num_actions=2, terminal_odds=0.1, other_env=None):
+        if other_env:
+            self.copy_from(other_env)
+        else:
+            self.num_states = num_states
+            self.terminal_odds = terminal_odds
+            self.b = b
+            self.actions = [a for a in range(num_actions)]
+            self.rewards = np.random.randn(num_states, num_actions, b)
+            self.next_states = np.random.randint(0, num_states, size=(num_states, num_actions, b))
+        self.reset()
+
+    def copy_from(self, other_env):
+        self.num_states = other_env.num_states
+        self.terminal_odds = other_env.terminal_odds
+        self.b = other_env.b
+        self.actions = other_env.actions
+        self.rewards = other_env.rewards
+        self.next_states = other_env.next_states
+
+    def get_transitions(self, state, action):
+        return (self.next_states[state, action, :], self.rewards[state, action, :], self.terminal_odds)
+
+    def get_random_state_action_pair(self):
+        return (np.random.randint(self.num_states), np.random.choice(self.actions))
+
+    def cycle_state_action_pairs(self):
+        s = (self.iterator // len(self.actions)) % self.num_states
+        a = self.actions[self.iterator % len(self.actions)]
+        self.iterator += 1
+        return (s, a)
+
+    def get_actions(self, state):
+        return self.actions
+
+    def step(self, action):
+        transition = np.random.randint(self.b)
+        reward = self.rewards[self.state, action, transition]
+        self.state = self.next_states[self.state, action, transition]
+        terminal = np.random.rand() < self.terminal_odds
+        return (self.state, reward, terminal, {})
+
+    def reset(self):
+        self.state = 0
+        self.iterator = 0
+        return self.state
