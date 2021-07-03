@@ -1,0 +1,10 @@
+EPISODES = 100000
+NUM_STATES = 1000
+JUMP_SIZE = 100
+ENVIRONMENT = RandomWalk(num_states=NUM_STATES, step_size=JUMP_SIZE)
+AGENT = UniformAgent(ENVIRONMENT)
+V = StateAggregation(num_states=NUM_STATES, num_bins=NUM_STATES // JUMP_SIZE, start_state=1)
+MAX_DELTA = 0.0001
+GAMMA = 1
+ALPHA = 0.0005
+COLOURS = ['blue', 'red']
