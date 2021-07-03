@@ -51,3 +51,35 @@ class RandomWalk(Environment):
     def reset(self):
         self.state = self.num_states // 2
         return self.state
+
+    def get_true_value(self, gamma, max_delta, log=True):
+        '''
+        Returns the true v function for the uniform agent.
+        '''
+        V = np.zeros(self.num_states)
+        while True:
+            delta = 0.0
+            for state in range(self.num_states):
+                actions = self.get_actions(state)
+                old_est = V[state]
+                sum = 0.0
+                for action in actions:
+                    s_ = state + action
+                    value_s_ = V[s_] if s_ < self.num_states and s_ >= 0 else 0
+                    if s_ >= self.num_states:
+                        r = 1
+                    elif s_ < 0:
+                        r = -1
+                    else:
+                        r = 0
+                    sum += 1 / len(actions) * (r + gamma * value_s_)
+                V[state] = sum
+
+                delta = max(delta, abs(old_est - V[state]))
+            
+            if log:
+                print('policy evaluation error:', delta)
+            if delta <= max_delta:
+                break
+        
+        return V

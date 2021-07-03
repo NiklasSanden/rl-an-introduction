@@ -22,39 +22,10 @@ ALPHA = 2 * 1e-5
 WIDTH = 2.0
 COLOURS = ['blue', 'red', 'gray']
 
-# This is highly dependant on the implementation of RandomWalk
-def get_true_value():
-    optimal_V = np.zeros(NUM_STATES)
-    while True:
-        delta = 0.0
-        for state in range(NUM_STATES):
-            actions = ENVIRONMENT.get_actions(state)
-            old_est = optimal_V[state]
-            sum = 0.0
-            for action in actions:
-                s_ = state + action
-                value_s_ = optimal_V[s_] if s_ < NUM_STATES and s_ >= 0 else 0
-                if s_ >= NUM_STATES:
-                    r = 1
-                elif s_ < 0:
-                    r = -1
-                else:
-                    r = 0
-                sum += 1 / len(actions) * (r + GAMMA * value_s_)
-            optimal_V[state] = sum
-
-            delta = max(delta, abs(old_est - optimal_V[state]))
-        
-        print('policy evaluation error:', delta)
-        if delta <= MAX_DELTA:
-            break
-    
-    return optimal_V
-
 if __name__ == '__main__':
     fig = plt.figure()
 
-    true_values = get_true_value()
+    true_values = ENVIRONMENT.get_true_value(GAMMA, MAX_DELTA)
     V = gradient_monte_carlo_v(ENVIRONMENT, AGENT, GAMMA, EPISODES, ALPHA, V, log=True)
     values = np.array([V(s) for s in range(1, NUM_STATES + 1)])
 
