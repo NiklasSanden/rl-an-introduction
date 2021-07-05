@@ -5,7 +5,7 @@ import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from utility.environments import *
 from utility.misc import *
-from utility.control_algorithms import *
+from utility.policy_evaluation import *
 from utility.agents import *
 from utility.function_approximators import *
 
