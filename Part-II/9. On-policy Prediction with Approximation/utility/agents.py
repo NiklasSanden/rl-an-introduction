@@ -22,16 +22,11 @@ class Agent(object):
         actions, probs = self.get_actions_and_probs(state)
         return {actions[a]:probs[a] for a in actions}
 
-class StateCounterWrapper(object):
+class AgentWrapper(object):
     def __init__(self, agent):
         self.agent = agent
-        self.counter = defaultdict(lambda: 0)
-
-    def get_count(self, state):
-        return self.counter[state]
     
     def __call__(self, state):
-        self.counter[state] += 1
         return self.agent(state)
     
     def get_actions_and_probs(self, state):
@@ -39,6 +34,39 @@ class StateCounterWrapper(object):
 
     def get_probs_as_dict(self, state):
         return self.agent.get_probs_as_dict(state)
+
+class StateCounterWrapper(AgentWrapper):
+    def __init__(self, agent):
+        super().__init__(agent)
+        self.counter = defaultdict(lambda: 0)
+
+    def get_count(self, state):
+        return self.counter[state]
+    
+    def __call__(self, state):
+        self.counter[state] += 1
+        return super().__call__(state)
+    
+class RepeatableWrapper(AgentWrapper):
+    def __init__(self, agent):
+        super().__init__(agent)
+        self.reset()
+
+    def __call__(self, state):
+        if self.iterator < len(self.saved_actions):
+            action = self.saved_actions[self.iterator]
+        else:
+            action = super().__call__(state)
+            self.saved_actions.append(action)
+        self.iterator += 1
+        return action
+
+    def repeat(self):
+        self.iterator = 0
+
+    def reset(self):
+        self.iterator = 0
+        self.saved_actions = []
 
 class UniformAgent(Agent):
     def __init__(self, env):

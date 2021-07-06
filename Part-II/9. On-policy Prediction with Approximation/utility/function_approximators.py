@@ -22,7 +22,9 @@ class GradientFunctionApproximator(object):
 
     def get_gradients(self, input):
         raise NotImplementedError()
-        
+
+    def zero_weights(self):
+        self.weights = np.zeros_like(self.weights)
 
 class StateAggregation(GradientFunctionApproximator):
     def __init__(self, num_states, num_bins, start_state=1):
