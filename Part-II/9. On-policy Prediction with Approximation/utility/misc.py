@@ -1,4 +1,6 @@
+from os import terminal_size
 import numpy as np
+from tqdm import tqdm
 
 def argmax(array):
     '''
@@ -22,6 +24,21 @@ def calculate_gammas(gamma, highest_power):
     for i in range(1, len(gammas)):
         gammas[i] = gammas[i - 1] * gamma
     return gammas
+
+def get_state_distribution(env, agent, episodes, states, log=True):
+    for i in tqdm(range(episodes), disable=(not log)):
+        state = env.reset()
+        terminal = False
+        while not terminal:
+            state, _, terminal, _ = env.step(agent(state))
+    state_counters = np.array([agent.get_count(state) for state in states], dtype=float)
+    return state_counters / np.sum(state_counters)
+
+def calculate_VE(V, V_hat, states, distribution):
+    sum = 0.0
+    for s, mu in zip(states, distribution):
+        sum += mu * (V(s) - V_hat(s)) ** 2
+    return sum
 
 class CircularList(object):
     def __init__(self, size, value=None):

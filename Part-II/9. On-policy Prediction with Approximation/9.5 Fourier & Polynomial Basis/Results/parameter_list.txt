@@ -1,0 +1,15 @@
+NUM_RUNS = 30
+EPISODES = 5000
+EPISODE_PLOT_INTERVAL = 50
+EPISODES_TO_GET_STATE_DISTRIBUTION = 100000
+NUM_STATES = 1000
+JUMP_SIZE = 100
+ENVIRONMENT = RandomWalk(num_states=NUM_STATES, step_size=JUMP_SIZE)
+AGENT = RepeatableWrapper(StateCounterWrapper(UniformAgent(ENVIRONMENT)))
+N_VALUES = [5, 10, 20]
+V = [[PolynomialBasis(n, NUM_STATES) for n in N_VALUES], [FourierBasis(n, NUM_STATES) for n in N_VALUES]]
+MAX_DELTA = 0.0001
+GAMMA = 1
+ALPHAS = [0.0001, 0.00005]
+COLOURS = [['red', 'orange', 'purple'], ['green', 'cyan', 'blue']]
+LABELS = ['Polynomial basis', 'Fourier Basis']

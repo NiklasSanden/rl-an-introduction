@@ -35,6 +35,16 @@ class AgentWrapper(object):
     def get_probs_as_dict(self, state):
         return self.agent.get_probs_as_dict(state)
 
+    # Wrapper child functions
+    def get_count(self, state):
+        return self.agent.get_count(state)
+
+    def repeat(self):
+        self.agent.repeat()
+
+    def reset(self):
+        self.agent.reset()
+
 class StateCounterWrapper(AgentWrapper):
     def __init__(self, agent):
         super().__init__(agent)

@@ -27,6 +27,9 @@ class GradientFunctionApproximator(object):
         self.weights = np.zeros_like(self.weights)
 
 class StateAggregation(GradientFunctionApproximator):
+    '''
+    Expects 1d input
+    '''
     def __init__(self, num_states, num_bins, start_state=1):
         super().__init__(num_bins, np.zeros(num_bins))
         self.num_states = num_states
@@ -42,4 +45,46 @@ class StateAggregation(GradientFunctionApproximator):
         gradient = np.zeros_like(self.weights)
         gradient[bin] = 1.0
         return gradient
+
+class PolynomialBasis(GradientFunctionApproximator):
+    '''
+    Expects 1d input
+    '''
+    def __init__(self, n, highest_value):
+        self.d = n + 1
+        self.highest_value = highest_value
+        super().__init__(self.d, np.zeros(self.d))
+
+    def __call__(self, input):
+        feature_vector = self._construct_feature_vector(input)
+        return np.dot(feature_vector, self.weights)
+
+    def get_gradients(self, input):
+        return self._construct_feature_vector(input)
     
+    def _construct_feature_vector(self, input):
+        input /= self.highest_value
+        powers = np.ones(self.d)
+        for i in range(1, len(powers)):
+            powers[i] = powers[i - 1] * input
+        return powers
+
+class FourierBasis(GradientFunctionApproximator):
+    '''
+    Expects 1d input
+    '''
+    def __init__(self, n, highest_value):
+        self.d = n + 1
+        self.highest_value = highest_value
+        super().__init__(self.d, np.zeros(self.d))
+
+    def __call__(self, input):
+        feature_vector = self._construct_feature_vector(input)
+        return np.dot(feature_vector, self.weights)
+
+    def get_gradients(self, input):
+        return self._construct_feature_vector(input)
+    
+    def _construct_feature_vector(self, input):
+        input /= self.highest_value
+        return np.cos(np.pi * input * np.arange(self.d))
