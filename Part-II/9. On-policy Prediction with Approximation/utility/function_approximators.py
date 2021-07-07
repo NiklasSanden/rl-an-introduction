@@ -3,7 +3,7 @@ import numpy as np
 class GradientFunctionApproximator(object):
     def __init__(self, d, weights=None):
         if weights is None:
-            self.weights = np.random.randn(d)
+            self.weights = np.zeros(d)
         else:
             self.weights = weights
     
@@ -31,7 +31,7 @@ class StateAggregation(GradientFunctionApproximator):
     Expects 1d input
     '''
     def __init__(self, num_states, num_bins, start_state=1):
-        super().__init__(num_bins, np.zeros(num_bins))
+        super().__init__(num_bins)
         self.num_states = num_states
         self.bin_size = num_states / num_bins
         self.start_state = start_state
@@ -53,7 +53,7 @@ class PolynomialBasis(GradientFunctionApproximator):
     def __init__(self, n, highest_value):
         self.d = n + 1
         self.highest_value = highest_value
-        super().__init__(self.d, np.zeros(self.d))
+        super().__init__(self.d)
 
     def __call__(self, input):
         feature_vector = self._construct_feature_vector(input)
@@ -76,7 +76,7 @@ class FourierBasis(GradientFunctionApproximator):
     def __init__(self, n, highest_value):
         self.d = n + 1
         self.highest_value = highest_value
-        super().__init__(self.d, np.zeros(self.d))
+        super().__init__(self.d)
 
     def __call__(self, input):
         feature_vector = self._construct_feature_vector(input)
@@ -88,3 +88,35 @@ class FourierBasis(GradientFunctionApproximator):
     def _construct_feature_vector(self, input):
         input /= self.highest_value
         return np.cos(np.pi * input * np.arange(self.d))
+
+class TileCoding(GradientFunctionApproximator):
+    '''
+    Expects 1d, discrete, input
+    '''
+    def __init__(self, num_tilings, width, highest_value):
+        self.num_tilings = num_tilings
+        self.width = width
+        self.highest_value = highest_value
+        self.max_tiles = int(np.ceil((highest_value + (num_tilings - 1) * (width / num_tilings)) / width)) + 1
+        self.d = self.max_tiles * num_tilings
+        super().__init__(self.d)
+
+    def __call__(self, input):
+        indices = self._get_indices(input)
+        return np.sum([self.weights[i] for i in indices])
+
+    def get_gradients(self, input):
+        # This could also just use indices (like __call__), but the current code for updating the weights would not support it.
+        indices = self._get_indices(input)
+        gradient = np.zeros(self.d)
+        gradient[indices] = 1.0
+        return gradient
+
+    def update_weights(self, alpha, change):
+        '''
+        The alpha to use in this type of tile coding is alpha / num_tilings.
+        '''
+        self.weights = self.weights + alpha / self.num_tilings * change
+    
+    def _get_indices(self, input):
+        return [int((input + i * (self.width / self.num_tilings)) / self.width) + i * self.max_tiles for i in range(self.num_tilings)]
