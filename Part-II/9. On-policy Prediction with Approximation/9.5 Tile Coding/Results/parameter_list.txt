@@ -7,7 +7,8 @@ JUMP_SIZE = 100
 ENVIRONMENT = RandomWalk(num_states=NUM_STATES, step_size=JUMP_SIZE)
 AGENT = RepeatableWrapper(StateCounterWrapper(UniformAgent(ENVIRONMENT)))
 NUM_TILINGS = 50
-V = [TileCoding(num_tilings=1, width=200, highest_value=NUM_STATES), TileCoding(num_tilings=NUM_TILINGS, width=200, highest_value=NUM_STATES)]
+V = [TileCoding(num_tilings=1, width=200, highest_value=NUM_STATES, lowest_value=1), 
+     TileCoding(num_tilings=NUM_TILINGS, width=200, highest_value=NUM_STATES, lowest_value=1)]
 MAX_DELTA = 0.0001
 GAMMA = 1
 ALPHA = 0.0001

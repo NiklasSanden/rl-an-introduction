@@ -1,4 +1,7 @@
 import numpy as np
+import math
+
+from .misc import *
 
 class GradientFunctionApproximator(object):
     def __init__(self, d, weights=None):
@@ -50,9 +53,10 @@ class PolynomialBasis(GradientFunctionApproximator):
     '''
     Expects 1d input
     '''
-    def __init__(self, n, highest_value):
+    def __init__(self, n, highest_value, lowest_value=0):
         self.d = n + 1
-        self.highest_value = highest_value
+        self.lowest_value = lowest_value
+        self.interval = highest_value - lowest_value
         super().__init__(self.d)
 
     def __call__(self, input):
@@ -63,7 +67,9 @@ class PolynomialBasis(GradientFunctionApproximator):
         return self._construct_feature_vector(input)
     
     def _construct_feature_vector(self, input):
-        input /= self.highest_value
+        input -= self.lowest_value
+        input /= self.interval
+        input = clip(input, 0, 1)
         powers = np.ones(self.d)
         for i in range(1, len(powers)):
             powers[i] = powers[i - 1] * input
@@ -73,9 +79,10 @@ class FourierBasis(GradientFunctionApproximator):
     '''
     Expects 1d input
     '''
-    def __init__(self, n, highest_value):
+    def __init__(self, n, highest_value, lowest_value=0):
         self.d = n + 1
-        self.highest_value = highest_value
+        self.lowest_value = lowest_value
+        self.interval = highest_value - lowest_value
         super().__init__(self.d)
 
     def __call__(self, input):
@@ -86,18 +93,21 @@ class FourierBasis(GradientFunctionApproximator):
         return self._construct_feature_vector(input)
     
     def _construct_feature_vector(self, input):
-        input /= self.highest_value
-        return np.cos(np.pi * input * np.arange(self.d))
+        input -= self.lowest_value
+        input /= self.interval
+        input = clip(input, 0, 1)
+        return np.cos(math.pi * input * np.arange(self.d))
 
 class TileCoding(GradientFunctionApproximator):
     '''
-    Expects 1d, discrete, input
+    Expects 1d input
     '''
-    def __init__(self, num_tilings, width, highest_value):
+    def __init__(self, num_tilings, width, highest_value, lowest_value=0):
         self.num_tilings = num_tilings
         self.width = width
-        self.highest_value = highest_value
-        self.max_tiles = int(np.ceil((highest_value + (num_tilings - 1) * (width / num_tilings)) / width)) + 1
+        self.lowest_value = lowest_value
+        interval = highest_value - lowest_value
+        self.max_tiles = int(math.ceil((interval + (num_tilings - 1) * (width / num_tilings)) / width))
         self.d = self.max_tiles * num_tilings
         super().__init__(self.d)
 
@@ -119,4 +129,7 @@ class TileCoding(GradientFunctionApproximator):
         self.weights = self.weights + alpha / self.num_tilings * change
     
     def _get_indices(self, input):
-        return [int((input + i * (self.width / self.num_tilings)) / self.width) + i * self.max_tiles for i in range(self.num_tilings)]
+        input -= self.lowest_value
+        # The clip makes sure that the index is valid even if there are outliers not in the interval [lowest_value, highest_value]
+        # Also, the very end point of the last interval/tile is not included normally, so a form of clip or min is necessary there 
+        return [clip(int((input + i * (self.width / self.num_tilings)) / self.width), 0, self.max_tiles - 1) + i * self.max_tiles for i in range(self.num_tilings)]

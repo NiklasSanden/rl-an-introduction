@@ -19,7 +19,8 @@ JUMP_SIZE = 100
 ENVIRONMENT = RandomWalk(num_states=NUM_STATES, step_size=JUMP_SIZE)
 AGENT = RepeatableWrapper(StateCounterWrapper(UniformAgent(ENVIRONMENT)))
 NUM_TILINGS = 50
-V = [TileCoding(num_tilings=1, width=200, highest_value=NUM_STATES), TileCoding(num_tilings=NUM_TILINGS, width=200, highest_value=NUM_STATES)]
+V = [TileCoding(num_tilings=1, width=200, highest_value=NUM_STATES, lowest_value=1), 
+     TileCoding(num_tilings=NUM_TILINGS, width=200, highest_value=NUM_STATES, lowest_value=1)]
 MAX_DELTA = 0.0001
 GAMMA = 1
 ALPHA = 0.0001
@@ -45,7 +46,7 @@ if __name__ == '__main__':
             for e in tqdm(range(EPISODES), leave=False):
                 V[a] = gradient_monte_carlo_v(ENVIRONMENT, AGENT, GAMMA, max_episodes=1, alpha=ALPHA, V=V[a], log=False)
                 if e % EPISODE_PLOT_INTERVAL == 0:
-                    errors[run, e // EPISODE_PLOT_INTERVAL, a] = np.sqrt(calculate_VE(lambda s: true_values[s - 1], V[a], states, distribution))
+                    errors[run, e // EPISODE_PLOT_INTERVAL, a] = math.sqrt(calculate_VE(lambda s: true_values[s - 1], V[a], states, distribution))
     
     errors = np.average(errors, axis=0)
 

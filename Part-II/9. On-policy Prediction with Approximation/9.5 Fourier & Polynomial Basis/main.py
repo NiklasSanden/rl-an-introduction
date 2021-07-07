@@ -19,11 +19,12 @@ JUMP_SIZE = 100
 ENVIRONMENT = RandomWalk(num_states=NUM_STATES, step_size=JUMP_SIZE)
 AGENT = RepeatableWrapper(StateCounterWrapper(UniformAgent(ENVIRONMENT)))
 N_VALUES = [5, 10, 20]
-V = [[PolynomialBasis(n, NUM_STATES) for n in N_VALUES], [FourierBasis(n, NUM_STATES) for n in N_VALUES]]
+V = [[PolynomialBasis(n=n, highest_value=NUM_STATES, lowest_value=1) for n in N_VALUES],
+     [FourierBasis(n=n, highest_value=NUM_STATES, lowest_value=1) for n in N_VALUES]]
 MAX_DELTA = 0.0001
 GAMMA = 1
 ALPHAS = [0.0001, 0.00005]
-COLOURS = [['red', 'orange', 'purple'], ['green', 'cyan', 'blue']]
+COLOURS = [['red', 'mediumpurple', 'orange'], ['blue', 'cyan', 'green']]
 LABELS = ['Polynomial basis', 'Fourier Basis']
 
 if __name__ == '__main__':
@@ -46,7 +47,7 @@ if __name__ == '__main__':
                 for e in tqdm(range(EPISODES), leave=False):
                     V[a][n] = gradient_monte_carlo_v(ENVIRONMENT, AGENT, GAMMA, max_episodes=1, alpha=ALPHAS[a], V=V[a][n], log=False)
                     if e % EPISODE_PLOT_INTERVAL == 0:
-                        errors[run, e // EPISODE_PLOT_INTERVAL, a, n] = np.sqrt(calculate_VE(lambda s: true_values[s - 1], V[a][n], states, distribution))
+                        errors[run, e // EPISODE_PLOT_INTERVAL, a, n] = math.sqrt(calculate_VE(lambda s: true_values[s - 1], V[a][n], states, distribution))
     
     errors = np.average(errors, axis=0)
 

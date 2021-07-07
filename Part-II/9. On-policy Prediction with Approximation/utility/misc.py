@@ -1,4 +1,3 @@
-from os import terminal_size
 import numpy as np
 from tqdm import tqdm
 
@@ -18,6 +17,12 @@ def argmax(array):
         elif array[i] == best:
             indices.append(i)
     return np.random.choice(indices)
+
+def clip(x, a, b):
+    '''
+    Using numpy.clip on scalars is significantly slower than this.
+    '''
+    return min(b, max(x, a))
 
 def calculate_gammas(gamma, highest_power):
     gammas = np.ones(highest_power + 1)

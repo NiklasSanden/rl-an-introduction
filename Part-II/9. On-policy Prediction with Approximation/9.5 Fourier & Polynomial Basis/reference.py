@@ -72,6 +72,6 @@ class FourierBasis(GradientFunctionApproximator):
         features = np.zeros(self.d)
         for i in range(self.d):
             constant_factors = [((i // powers_of_n_plus_one[k]) % (self.n + 1)) for k in range(len(input))]
-            features[i] = np.cos(np.pi * np.dot(input, np.array([constant_factors[k] for k in range(len(input))])))
+            features[i] = np.cos(math.pi * np.dot(input, np.array([constant_factors[k] for k in range(len(input))])))
         
         return features

@@ -7,9 +7,10 @@ JUMP_SIZE = 100
 ENVIRONMENT = RandomWalk(num_states=NUM_STATES, step_size=JUMP_SIZE)
 AGENT = RepeatableWrapper(StateCounterWrapper(UniformAgent(ENVIRONMENT)))
 N_VALUES = [5, 10, 20]
-V = [[PolynomialBasis(n, NUM_STATES) for n in N_VALUES], [FourierBasis(n, NUM_STATES) for n in N_VALUES]]
+V = [[PolynomialBasis(n=n, highest_value=NUM_STATES, lowest_value=1) for n in N_VALUES],
+     [FourierBasis(n=n, highest_value=NUM_STATES, lowest_value=1) for n in N_VALUES]]
 MAX_DELTA = 0.0001
 GAMMA = 1
 ALPHAS = [0.0001, 0.00005]
-COLOURS = [['red', 'orange', 'purple'], ['green', 'cyan', 'blue']]
+COLOURS = [['red', 'mediumpurple', 'orange'], ['blue', 'cyan', 'green']]
 LABELS = ['Polynomial basis', 'Fourier Basis']
