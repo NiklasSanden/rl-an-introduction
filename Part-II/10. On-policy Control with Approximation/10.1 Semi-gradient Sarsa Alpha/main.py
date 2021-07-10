@@ -37,8 +37,8 @@ if __name__ == '__main__':
 
     ax = fig.add_subplot()
     for a in range(len(ALPHAS)):
-        ax.plot(np.arange(1, EPISODES + 1), steps_per_episode[:, a], color=COLOURS[a], label='alpha=' + str(ALPHAS[a]) + '/' + str(NUM_TILINGS))
-    ax.set(ylabel='Steps per episode log scale (averaged over 100 runs)', xlabel='Episodes')
+        ax.plot(np.arange(1, EPISODES + 1), steps_per_episode[:, a], color=COLOURS[a], label=f'alpha={ALPHAS[a]}/{NUM_TILINGS}')
+    ax.set(ylabel=f'Steps per episode log scale (averaged over {NUM_RUNS} runs)', xlabel='Episodes')
     ax.set_yscale('log', base=10)
     Y = [100, 200, 400, 1000]
     ax.set_ylim(Y[0], Y[-1])

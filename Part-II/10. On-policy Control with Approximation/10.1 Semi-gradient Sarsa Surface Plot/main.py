@@ -44,6 +44,6 @@ if __name__ == '__main__':
         ax.set_xlabel('Position')
         ax.set_ylabel('Velocity')
         ax.set_zlabel('Cost to go')
-        ax.set(title='Episode ' + str(e))
+        ax.set(title=f'Episode {e}')
 
     plt.show()
