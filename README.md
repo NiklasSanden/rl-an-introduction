@@ -4,6 +4,9 @@ Small tests of the theory presented in: http://incompleteideas.net/book/RLbook20
 For reference, the origin of the "hack" used by some code files to import uninstalled packages in parent directories was taken from here: https://stackoverflow.com/questions/714063/importing-modules-from-parent-folder#comment23054549_11158224
 
 ## Future improvements
+* Chapter 2-9
+  - [ ] Use string interpolation.
+
 * Chapter 2
   - [x] The environments in chapter 2 should take more parameters in their constructor such as the starting mean.
   - [x] The utilities framework in chapter 2 was not designed with *Gradient Bandits* in mind. The implementation for it is therefore currently a stand-alone class in the *agent.py* file.
@@ -24,6 +27,9 @@ For reference, the origin of the "hack" used by some code files to import uninst
 
 * Chapter 8
   - [ ] The results in Prioritized Sweeping are not very fair. Normal Dyna-Q should not make updates that wouldn't change anything, or we should count Prioritized Sweep as doing updates even if the queue is empty. We also only check for it being optimal after an episode, so long episodes can give a high error, which is worse for Dyna-Q. The experiment was cumbersome because with a low epsilon the algorithms, especially Prioritized Sweeping could easily get stuck on an unoptimal solution for very long. One should also experiment a bit with smaller alpha values, because right now the queue is empty most of the time. 
+
+* Chapter 10
+  - [ ] The book most likely used epsilon=0 for *10.1 Semi-gradient Sarsa Alpha*, so that experiment should be rerun.
 
 ## Ideas
 * Chapter 3
