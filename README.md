@@ -30,6 +30,7 @@ For reference, the origin of the "hack" used by some code files to import uninst
 
 * Chapter 10
   - [ ] The book most likely used epsilon=0 for *10.1 Semi-gradient Sarsa Alpha*, so that experiment should be rerun.
+  - [ ] *10.2 n-step Parameter Sweep* should be rerun with NUM_RUNS=100, but there is a risk that a run won't converge and therefore loops indefinitely. Make an environment wrapper that makes the episode end after a set number of steps so that the experiment can finish despite this.
 
 ## Ideas
 * Chapter 3
