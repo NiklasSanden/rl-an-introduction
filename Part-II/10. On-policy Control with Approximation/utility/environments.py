@@ -59,3 +59,31 @@ class MountainCar(Environment):
         self.pos = r[0] * (self.start_x_max - self.start_x_min) + self.start_x_min
         self.v = r[1] * (self.start_v_max - self.start_v_min) + self.start_v_min
         return (self.pos, self.v)
+
+class ServerAssignment(Environment):
+    '''
+    This is a continous task, so terminal will always be False.
+    '''
+    def __init__(self, max_servers=10, priorities=[1, 2, 4, 8], free_server_p=0.06):
+        self.max_servers = max_servers
+        self.priorities = priorities
+        self.free_server_p = free_server_p
+        self.reset()
+
+    def get_actions(self, state):
+        return [0, 1] # 0 = reject, 1 = approve
+    
+    def step(self, action):
+        new_servers = np.sum(np.random.rand(self.max_servers - self.num_free_servers) < self.free_server_p)
+        reward = 0
+        if self.num_free_servers != 0 and action == 1:
+            reward = self.front_priority
+            self.num_free_servers -= 1
+        self.num_free_servers += new_servers
+        self.front_priority = np.random.choice(self.priorities)
+        return ((self.num_free_servers, self.front_priority), reward, False, {})
+
+    def reset(self):
+        self.num_free_servers = np.random.randint(0, 11)
+        self.front_priority = np.random.choice(self.priorities)
+        return (self.num_free_servers, self.front_priority)

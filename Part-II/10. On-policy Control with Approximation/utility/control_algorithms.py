@@ -55,3 +55,22 @@ def semi_gradient_n_step_sarsa(env, agent, gamma, n, max_episodes, alpha, Q, log
             
             t += 1
     return Q
+
+def differential_semi_gradient_sarsa(env, agent, max_iterations, alpha, beta, Q, R_bar, log=True):
+    '''
+    The environment is expected to be continous (i.e. terminal is always False)
+    '''
+    state = env.reset()
+    action = agent(state, Q)
+    for i in tqdm(range(max_iterations), leave=False, disable=(not log)):
+        next_state, reward, _, _ = env.step(action)
+        
+        next_action = agent(next_state, Q)
+        delta = reward - R_bar + Q(next_state, next_action) - Q(state, action)
+        R_bar += beta * delta
+        change = delta * Q.get_gradients(state, action)
+        Q.update_weights(alpha, change)
+
+        state = next_state
+        action = next_action
+    return (Q, R_bar)

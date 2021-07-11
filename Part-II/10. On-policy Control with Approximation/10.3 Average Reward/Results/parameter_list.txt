@@ -1,0 +1,9 @@
+ITERATIONS = 2000000
+MAX_SERVERS = 10            # The plotting code currently
+PRIORITIES = [1, 2, 4, 8]   # hard-codes these values
+ENVIRONMENT = ServerAssignment(max_servers=MAX_SERVERS, priorities=PRIORITIES, free_server_p=0.06)
+AGENT = EpsilonGreedyAgent(ENVIRONMENT, epsilon=0.1)
+Q = Tabular(num_states=(MAX_SERVERS + 1) * len(PRIORITIES), num_actions=len(ENVIRONMENT.get_actions(None)))
+ALPHA = 0.01
+BETA = 0.01
+COLOURS = ['red', 'green', 'blue', 'black']

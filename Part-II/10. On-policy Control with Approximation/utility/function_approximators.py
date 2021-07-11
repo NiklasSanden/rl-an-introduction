@@ -5,6 +5,7 @@ from .rich_tile_coding import *
 
 class GradientFunctionApproximator(object):
     def __init__(self, d, weights=None):
+        self.d = d
         if weights is None:
             self.weights = np.zeros(d)
         else:
@@ -37,7 +38,6 @@ class TileCoding(GradientFunctionApproximator):
         self.num_tilings = num_tilings
         self.dim_sizes = dim_sizes
         self.iht = IHT(max_size)
-        self.d = max_size
         super().__init__(max_size)
 
     def __call__(self, input, action):
@@ -59,3 +59,30 @@ class TileCoding(GradientFunctionApproximator):
     
     def _get_indices(self, input, action):
         return tiles(self.iht, self.num_tilings, [self.num_tilings * x / size for x, size in zip(input, self.dim_sizes)], [action])
+
+class Tabular(GradientFunctionApproximator):
+    '''
+    This is a tabular setting using the framework of function approximation (see exercise 9.1)
+    '''
+    def __init__(self, num_states, num_actions):
+        self.num_states = num_states
+        self.num_actions = num_actions
+        self.map_to_weight = dict()
+        self.index_iterator = 0
+        super().__init__(num_states * num_actions)
+
+    def __call__(self, input, action):
+        return self.weights[self._get_index(input, action)]
+
+    def get_gradients(self, input, action):
+        # This could also just use indices (like __call__), but the current code for updating the weights would not support it.
+        index = self._get_index(input, action)
+        gradient = np.zeros(self.d)
+        gradient[index] = 1.0
+        return gradient
+
+    def _get_index(self, input, action):
+        if not ((input, action) in self.map_to_weight):
+            self.map_to_weight[(input, action)] = self.index_iterator
+            self.index_iterator += 1
+        return self.map_to_weight[(input, action)]
