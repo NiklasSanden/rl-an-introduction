@@ -1,3 +1,4 @@
+from numpy.core.overrides import verify_matching_signatures
 from tqdm import tqdm
 
 from .misc import *
@@ -92,4 +93,32 @@ def online_lambda_return_v(env, agent, gamma, lambda_, max_episodes, alpha, V, l
             for i in range(len(Gs)):
                 change = (Gs[i] - V(states[i])) * V.get_gradients(states[i])
                 V.update_weights(alpha, change)
+    return V
+
+def true_online_TD_lambda_v(env, agent, gamma, lambda_, max_episodes, alpha, V, log=True):
+    '''
+    This is currently not used in any experiments, but is here for reference. Feel free to run
+    it together with online_lambda_return_v to show empirically that they are equivalent.
+    This assumes that V is linear so that V.get_gradients(state) gives x(state).
+    '''
+    for i in tqdm(range(max_episodes), leave=False, disable=(not log)):
+        state = env.reset()
+        x = V.get_gradients(state)
+        z = np.zeros_like(x)
+        v_old = 0
+        terminal = False
+        while not terminal:
+            action = agent(state)
+            next_state, reward, terminal, _ = env.step(action)
+            next_x = np.zeros_like(x) if terminal else V.get_gradients(next_state)
+
+            v = V(state)
+            next_v = 0 if terminal else V(next_state)
+            delta = reward + gamma * next_v - v
+            z = gamma * lambda_ * z + (1 - alpha * gamma * lambda_ * z.dot(x)) * x
+            change = (delta + v - v_old) * z - (v - v_old) * x
+            V.update_weights(alpha, change)
+            v_old = next_v
+            x = next_x
+            state = next_state
     return V
