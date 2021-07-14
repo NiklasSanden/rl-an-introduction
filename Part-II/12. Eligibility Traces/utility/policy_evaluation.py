@@ -1,4 +1,3 @@
-from numpy.core.overrides import verify_matching_signatures
 from tqdm import tqdm
 
 from .misc import *
