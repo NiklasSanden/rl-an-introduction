@@ -40,6 +40,12 @@ class AgentWrapper(object):
     def reset_actions(self):
         self.agent.reset_actions()
 
+    def get_number_of_calls(self):
+        return self.agent.get_number_of_calls()
+
+    def reset_counter(self):
+        self.agent.reset_counter()
+
 class RepeatableWrapper(AgentWrapper):
     def __init__(self, agent):
         super().__init__(agent)
@@ -60,6 +66,25 @@ class RepeatableWrapper(AgentWrapper):
     def reset_actions(self):
         self.iterator = 0
         self.saved_actions = []
+
+class NumberOfActionsWrapper(AgentWrapper):
+    '''
+    This wrapper will keep track of the number of calls made to it which is used to 
+    see how many time steps it took to complete each episode.
+    '''
+    def __init__(self, agent):
+        super().__init__(agent)
+        self.reset_counter()
+    
+    def __call__(self, state, Q=None):
+        self.counter += 1
+        return super().__call__(state, Q)
+
+    def get_number_of_calls(self):
+        return self.counter
+
+    def reset_counter(self):
+        self.counter = 0
 
 class EpsilonGreedyAgent(Agent):
     def __init__(self, env, epsilon=0.1):
