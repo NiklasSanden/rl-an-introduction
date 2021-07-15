@@ -81,11 +81,5 @@ class TileCoding(GradientFunctionApproximator):
         gradient[indices] = 1.0
         return gradient
 
-    def update_weights(self, alpha, change):
-        '''
-        The alpha to use in this type of tile coding is alpha / num_tilings.
-        '''
-        self.weights = self.weights + alpha / self.num_tilings * change
-    
     def _get_indices(self, input, action=0):
         return tiles(self.iht, self.num_tilings, [self.num_tilings * x / size for x, size in zip(input, self.dim_sizes)], [action])

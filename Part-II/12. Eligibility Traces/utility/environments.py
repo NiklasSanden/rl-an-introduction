@@ -22,6 +22,32 @@ class Environment(object):
         '''
         raise NotImplementedError()
 
+class MaxStepsWrapper(object):
+    def __init__(self, env, max_steps):
+        self.env = env
+        self.max_steps = max_steps
+        self.reset_steps()
+    
+    def get_actions(self, state):
+        return self.env.get_actions(state)
+
+    def step(self, action):
+        s_, r, t, info = self.env.step(action)
+        self.steps += 1
+        if self.steps > self.max_steps:
+            t = True
+        return (s_, r, t, info)
+
+    def render(self):
+        self.env.render()
+
+    def reset(self):
+        self.reset_steps()
+        return self.env.reset()
+    
+    def reset_steps(self):
+        self.steps = 0
+
 class RandomWalk(Environment):
     def __init__(self, num_states=19):
         '''
