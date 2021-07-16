@@ -1,0 +1,9 @@
+NUM_RUNS = 100
+EPISODES = 1000
+ENVIRONMENT = ShortCorridor()
+AGENT = ShortCorridorPolicy(ENVIRONMENT)
+V = ShortCorridorV()
+GAMMA = 1
+ALPHAS = [2 ** -12, 2 ** -13, 2 ** -14, (2 ** -9, 2 ** -6)]
+COLOURS = ['blue', 'red', 'green', 'magenta']
+LABELS = ['REINFORCE alpha=2^-12', 'REINFORCE alpha=2^-13', 'REINFORCE alpha=2^-14', 'REINFORCE with baseline alpha_theta=2^-9, alpha_w=2^-6']
