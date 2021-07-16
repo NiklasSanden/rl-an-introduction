@@ -33,7 +33,7 @@ For reference, the origin of the "hack" used by some code files to import uninst
   - [ ] *10.2 n-step Parameter Sweep* should be rerun with NUM_RUNS=100, but there is a risk that a run won't converge and therefore loops indefinitely. Make an environment wrapper that makes the episode end after a set number of steps so that the experiment can finish despite this.
 
 * Chapter 13
-  - [ ] Run the same experiment as in *Example 13.1*
+  - [x] Run the same experiment as in *Example 13.1*
 
 ## Ideas
 * Chapter 3
