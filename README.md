@@ -32,6 +32,9 @@ For reference, the origin of the "hack" used by some code files to import uninst
   - [ ] The book most likely used epsilon=0 for *10.1 Semi-gradient Sarsa Alpha*, so that experiment should be rerun.
   - [ ] *10.2 n-step Parameter Sweep* should be rerun with NUM_RUNS=100, but there is a risk that a run won't converge and therefore loops indefinitely. Make an environment wrapper that makes the episode end after a set number of steps so that the experiment can finish despite this.
 
+* Chapter 13
+  - [ ] Run the same experiment as in *Example 13.1*
+
 ## Ideas
 * Chapter 3
   * (When reading 3.2) Giving a reward of -1 at every time step to encourage the agent to escape a maze seems suboptimal from a sense of how we want the agent to "think", although it works great in the tabular case. Even though it does receive -1, it has no idea that it can do better or that there is a goal in the end with a different reward (or just a terminal state at all). When dealing with sparse rewards (I'm mostly thinking about just giving a different reward when transitioning to a terminal state), perhaps it makes sense to let the agent know the reward function and see the states (or something similar) where the reward differs. From there it could perhaps construct some model or internal reward system to encourage exploring and making "progress". The point of this whole idea is that if we only have one sparse reward at the end (and all the others are the same such as -1 or 0 for example), it will almost always make sense to let the agent know when that occurs or at least that it can occur (even if I'm not sure how it can be exploited yet). That's what we would do if a human were to try to complete such a task in most relevant situations.
